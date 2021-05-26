@@ -1,0 +1,109 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'de.telran'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.flywaydb:flyway-core:7.9.1'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.postgresql:postgresql'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'com.h2database:h2'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// api build
+ext.versionPropsFilename = "src/main/resources/version.properties"
+
+ext.incrementAndGetBuildVersion = {
+    def versionPropsFile = file(versionPropsFilename)
+    if (versionPropsFile.canRead()) {
+        def versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def versionBuild = versionProps['version.build'].toInteger() + 1
+        versionProps['version.build'] = versionBuild.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+        return versionBuild
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
+task bootJarDev {
+    dependsOn('bootJar')
+    group('build')
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(bootJarDev)) {
+        def build = ext.incrementAndGetBuildVersion()
+        version = "${version}.${build}-DEV"
+    }
+}
+
+
+// ui tasks
+
+ext {
+    uiBuildDirectory = "src/main/resources/static"
+}
+
+task buildUi {
+    dependsOn('copyUiBuild')
+    group('build')
+}
+
+task copyUiBuild(type: Copy) {
+    dependsOn(':business-tracker-ui:npm_run_build')
+    dependsOn('clearUiBuild')
+    from("${project(":business-tracker-ui").projectDir}/dist/business-tracker-ui")
+    into(project.ext.uiBuildDirectory)
+}
+
+task clearUiBuild(type: Delete) {
+    def files = file(project.ext.uiBuildDirectory).listFiles()
+    if (files)
+        delete(files)
+}
+
