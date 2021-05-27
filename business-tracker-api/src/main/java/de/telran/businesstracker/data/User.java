@@ -1,4 +1,4 @@
-package data;
+package de.telran.businesstracker.data;
 
 import lombok.Getter;
 import javax.persistence.Entity;

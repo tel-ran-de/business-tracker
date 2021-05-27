@@ -1,4 +1,4 @@
-package data;
+package de.telran.businesstracker.data;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +14,8 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name = "resource")
-public class Resource {
+@Table(name = "project")
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +24,6 @@ public class Resource {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "hours")
-    private Integer hours;
-
-    @Column(name = "cost")
-    private Double cost;
-
     @ManyToOne
-    private Task task;
+    private User user;
 }

@@ -1,5 +1,4 @@
-package data;
-
+package de.telran.businesstracker.data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,15 +13,18 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name = "project")
-public class Project {
+@Table(name = "member")
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "position")
+    private String position;
+
+    @ManyToOne
+    private Project project;
 
     @ManyToOne
     private User user;

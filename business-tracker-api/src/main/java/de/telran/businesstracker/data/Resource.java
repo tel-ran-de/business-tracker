@@ -1,4 +1,5 @@
-package data;
+package de.telran.businesstracker.data;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
-
 
 @Entity
 @Getter
 @Setter
-@Table(name = "roadmap")
-public class Roadmap {
+@Table(name = "resource")
+public class Resource {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +24,12 @@ public class Roadmap {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
+    @Column(name = "hours")
+    private Integer hours;
+
+    @Column(name = "cost")
+    private Double cost;
 
     @ManyToOne
-    private Project project;
+    private Task task;
 }
