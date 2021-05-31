@@ -19,8 +19,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -28,10 +26,6 @@ import java.util.Optional;
 public class TaskController {
 
     TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
     @PostMapping("")
     public ResponseEntity<Task> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
@@ -43,12 +37,9 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable(value = "id", required = false)
-        final Long id, @RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
+        @RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
         Task task = taskService.getById(taskDto.id);
 
-        if (!Objects.equals(id, task.getId())) {
-            throw new RuntimeException("Invalid ID");
-        }
         Task result = taskService.edit(task, taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
 
         return ResponseEntity
@@ -63,8 +54,8 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
-        Optional<Task> task = Optional.ofNullable(taskService.getById(id));
-        return ResponseEntity.of(task);
+        Task task = taskService.getById(id);
+        return ResponseEntity.ok().body(task);
     }
 
     @DeleteMapping("/{id}")

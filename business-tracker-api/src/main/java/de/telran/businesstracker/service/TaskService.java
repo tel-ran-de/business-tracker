@@ -33,7 +33,7 @@ public class TaskService {
     public Task add(String name,boolean finished, Long milestoneId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
         Milestone milestone = milestoneRepository.findById(milestoneId).orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
-        Task task = new Task(name,finished, milestone, member);
+        Task task = Task.builder().name(name).milestone(milestone).finished(finished).responsibleMember(member).build();
         taskRepository.save(task);
         return task;
     }

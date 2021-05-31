@@ -1,7 +1,9 @@
 package de.telran.businesstracker.data;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,25 +11,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "resource")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Resource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "hours")
+    @Column
     private Integer hours;
 
-    @Column(name = "cost")
+    @Column
     private Double cost;
 
     @ManyToOne

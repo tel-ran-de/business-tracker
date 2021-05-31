@@ -35,7 +35,7 @@ class TaskControllerTest {
     public void integrationTestTask() {
         User user = new User();
         userRepository.save(user);
-        Project project = new Project();
+        Project project = Project.builder().build();
         projectRepository.save(project);
         Member member = new Member(1L, "Boss", project, user);
         memberRepository.save(member);

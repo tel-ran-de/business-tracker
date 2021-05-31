@@ -1,9 +1,9 @@
 package de.telran.businesstracker.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,25 +11,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "task")
-
 public class Task{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "finished")
+    @Column
     private Boolean finished;
 
     @ManyToOne
@@ -37,11 +36,4 @@ public class Task{
 
     @ManyToOne
     private Member responsibleMember;
-
-    public Task(String name, boolean finished, Milestone milestone, Member responsibleMember) {
-        this.name = name;
-        this.finished = finished;
-        this.responsibleMember = responsibleMember;
-        this.milestone = milestone;
-    }
 }

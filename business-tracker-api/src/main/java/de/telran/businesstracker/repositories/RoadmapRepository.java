@@ -4,5 +4,9 @@ import de.telran.businesstracker.data.Roadmap;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface RoadmapRepository extends CrudRepository<Roadmap, Long> {}
+public interface RoadmapRepository extends CrudRepository<Roadmap, Long> {
+    List<Roadmap> findAll();
+}
