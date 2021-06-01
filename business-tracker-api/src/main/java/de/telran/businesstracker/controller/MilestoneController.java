@@ -31,20 +31,20 @@ public class MilestoneController {
     public ResponseEntity<Milestone> createMilestone(@RequestBody @Valid MilestoneDto milestoneDto) throws URISyntaxException {
         Milestone result = milestoneService.add(milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
         return ResponseEntity
-            .created(new URI("/api/milestones/" + result.getId()))
-            .body(result);
+                .created(new URI("/api/milestones/" + result.getId()))
+                .body(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Milestone> updateMilestone(@PathVariable(value = "id", required = false)
-        @RequestBody @Valid MilestoneDto milestoneDto) throws HttpClientErrorException.BadRequest {
+                                                     @RequestBody @Valid MilestoneDto milestoneDto) throws HttpClientErrorException.BadRequest {
         Milestone milestone = milestoneService.getById(milestoneDto.id);
 
         Milestone result = milestoneService.edit(milestone, milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
 
         return ResponseEntity
-            .ok()
-            .body(result);
+                .ok()
+                .body(result);
     }
 
     @GetMapping("")
@@ -62,7 +62,7 @@ public class MilestoneController {
     public ResponseEntity<Void> deleteMilestone(@PathVariable Long id) {
         milestoneService.removeById(id);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
 }

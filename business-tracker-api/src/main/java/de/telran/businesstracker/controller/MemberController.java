@@ -29,22 +29,22 @@ public class MemberController {
 
     @PostMapping("")
     public ResponseEntity<Member> createMember(@RequestBody @Valid MemberDto memberDto) throws URISyntaxException {
-        Member result = memberService.add(memberDto.position,memberDto.projectId, memberDto.userId);
+        Member result = memberService.add(memberDto.position, memberDto.projectId, memberDto.userId);
         return ResponseEntity
-            .created(new URI("/api/members/" + result.getId()))
-            .body(result);
+                .created(new URI("/api/members/" + result.getId()))
+                .body(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Member> updateMember(@PathVariable(value = "id", required = false)
-        @RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
+                                               @RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
         Member member = memberService.getById(memberDto.id);
 
-        Member result = memberService.edit(member, memberDto.position,memberDto.projectId, memberDto.userId);
+        Member result = memberService.edit(member, memberDto.position, memberDto.projectId, memberDto.userId);
 
         return ResponseEntity
-            .ok()
-            .body(result);
+                .ok()
+                .body(result);
     }
 
     @GetMapping("")
@@ -62,7 +62,7 @@ public class MemberController {
     public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.removeById(id);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
 }

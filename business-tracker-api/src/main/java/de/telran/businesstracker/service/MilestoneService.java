@@ -21,8 +21,8 @@ public class MilestoneService {
     RoadmapRepository roadmapRepository;
 
     public MilestoneService(MilestoneRepository milestoneRepository, RoadmapRepository roadmapRepository) {
-       this.milestoneRepository = milestoneRepository;
-       this.roadmapRepository = roadmapRepository;
+        this.milestoneRepository = milestoneRepository;
+        this.roadmapRepository = roadmapRepository;
     }
 
     public Milestone add(String name, LocalDate startDate, LocalDate finishDate, Long roadmapId) {

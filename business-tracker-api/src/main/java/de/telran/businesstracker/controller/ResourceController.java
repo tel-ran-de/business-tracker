@@ -37,7 +37,7 @@ public class ResourceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Resource> updateResource(@PathVariable(value = "id", required = false)
-                                                    @RequestBody @Valid ResourceDto resourceDto) throws HttpClientErrorException.BadRequest {
+                                                   @RequestBody @Valid ResourceDto resourceDto) throws HttpClientErrorException.BadRequest {
         Resource resource = resourceService.getById(resourceDto.id);
 
         Resource result = resourceService.edit(resource, resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);

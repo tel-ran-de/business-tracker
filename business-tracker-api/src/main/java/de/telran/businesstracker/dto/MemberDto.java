@@ -11,7 +11,7 @@ public class MemberDto {
 
     public Long id;
 
-    public String position;;
+    public String position;
 
     public Long projectId;
 

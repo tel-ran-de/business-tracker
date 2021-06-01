@@ -29,22 +29,22 @@ public class TaskController {
 
     @PostMapping("")
     public ResponseEntity<Task> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
-        Task result = taskService.add(taskDto.name,taskDto.finished,taskDto.milestoneId, taskDto.memberId);
+        Task result = taskService.add(taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
         return ResponseEntity
-            .created(new URI("/api/tasks/" + result.getId()))
-            .body(result);
+                .created(new URI("/api/tasks/" + result.getId()))
+                .body(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable(value = "id", required = false)
-        @RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
+                                           @RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
         Task task = taskService.getById(taskDto.id);
 
         Task result = taskService.edit(task, taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
 
         return ResponseEntity
-            .ok()
-            .body(result);
+                .ok()
+                .body(result);
     }
 
     @GetMapping("")
@@ -62,7 +62,7 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.removeById(id);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
 }

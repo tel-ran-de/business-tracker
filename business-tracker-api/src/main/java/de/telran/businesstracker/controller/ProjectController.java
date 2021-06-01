@@ -31,20 +31,20 @@ public class ProjectController {
     public ResponseEntity<Project> createProject(@RequestBody @Valid ProjectDto projectDto) throws URISyntaxException {
         Project result = projectService.add(projectDto.name, projectDto.userId);
         return ResponseEntity
-            .created(new URI("/api/projects/" + result.getId()))
-            .body(result);
+                .created(new URI("/api/projects/" + result.getId()))
+                .body(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Project> updateProject(@PathVariable(value = "id", required = false)
-        @RequestBody @Valid ProjectDto projectDto) throws HttpClientErrorException.BadRequest {
+                                                 @RequestBody @Valid ProjectDto projectDto) throws HttpClientErrorException.BadRequest {
         Project project = projectService.getById(projectDto.id);
 
         Project result = projectService.edit(project, projectDto.name, projectDto.userId);
 
         return ResponseEntity
-            .ok()
-            .body(result);
+                .ok()
+                .body(result);
     }
 
     @GetMapping("")
@@ -62,7 +62,7 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         projectService.removeById(id);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
 }

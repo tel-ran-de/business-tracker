@@ -20,8 +20,8 @@ public class ProjectService {
     UserRepository userRepository;
 
     public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
-       this.projectRepository = projectRepository;
-       this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public Project add(String name, Long userId) {
