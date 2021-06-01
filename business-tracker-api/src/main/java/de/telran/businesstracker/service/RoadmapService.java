@@ -32,8 +32,9 @@ public class RoadmapService {
         return roadmap;
     }
 
-    public Roadmap edit(Roadmap roadmap, String name, LocalDate startDate, Long projectId) {
+    public Roadmap edit(Long id, String name, LocalDate startDate, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(() -> new EntityNotFoundException(PROJECT_DOES_NOT_EXIST));
+        Roadmap roadmap = getById(id);
         roadmap.setName(name);
         roadmap.setStartDate(startDate);
         roadmap.setProject(project);

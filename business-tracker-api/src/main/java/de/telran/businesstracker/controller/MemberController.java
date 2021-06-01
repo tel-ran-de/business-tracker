@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class MemberController {
 
-    MemberService memberService;
+   public final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Member> createMember(@RequestBody @Valid MemberDto memberDto) throws URISyntaxException {
@@ -36,11 +40,10 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Member> updateMember(@PathVariable Long id,
                                                @RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
-        Member member = memberService.getById(memberDto.id);
 
-        Member result = memberService.edit(member, memberDto.position, memberDto.projectId, memberDto.userId);
+        Member result = memberService.edit(id, memberDto.position, memberDto.projectId, memberDto.userId);
 
         return ResponseEntity
                 .ok()

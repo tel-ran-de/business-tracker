@@ -90,6 +90,7 @@ class MemberServiceTest {
         User user = new User(2L);
         Project project = new Project(3L, "Project", user);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
 
         Member member = Member.builder()
                 .id(1L)
@@ -101,10 +102,10 @@ class MemberServiceTest {
 
         Project newProject = new Project(4L, "Project1", user);
         String newPosition = "Senior";
-
         when(projectRepository.findById(newProject.getId())).thenReturn(Optional.of(newProject));
 
-        memberService.edit(member, newPosition, newProject.getId(), user.getId());
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+        memberService.edit(member.getId(), newPosition, newProject.getId(), user.getId());
 
         verify(memberRepository, times(1)).save(any());
         verify(memberRepository, times(1)).save(argThat(savedMember -> savedMember.getPosition().equals(newPosition) &&

@@ -123,7 +123,8 @@ class TaskServiceTest {
         when(memberRepository.findById(newMember.getId())).thenReturn(Optional.of(newMember));
         when(milestoneRepository.findById(newMilestone.getId())).thenReturn(Optional.of(newMilestone));
 
-        taskService.edit(oldTask, name, true, newMilestone.getId(), newMember.getId());
+        when(taskRepository.findById(oldTask.getId())).thenReturn(Optional.of(oldTask));
+        taskService.edit(oldTask.getId(), name, true, newMilestone.getId(), newMember.getId());
 
         verify(taskRepository, times(1)).save(any());
         verify(taskRepository, times(1)).save(argThat(savedTask -> savedTask.getName().equals(name) &&

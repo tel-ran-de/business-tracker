@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class RoadmapController {
 
-    RoadmapService roadmapService;
+    private final RoadmapService roadmapService;
+
+    public RoadmapController(RoadmapService roadmapService) {
+        this.roadmapService = roadmapService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Roadmap> createRoadmap(@RequestBody @Valid RoadmapDto roadmapDto) throws URISyntaxException {
@@ -36,11 +40,9 @@ public class RoadmapController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Roadmap> updateRoadmap(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Roadmap> updateRoadmap(@PathVariable Long id,
                                                  @RequestBody @Valid RoadmapDto roadmapDto) throws HttpClientErrorException.BadRequest {
-        Roadmap roadmap = roadmapService.getById(roadmapDto.id);
-
-        Roadmap result = roadmapService.edit(roadmap, roadmapDto.name, roadmapDto.startDate, roadmapDto.projectId);
+        Roadmap result = roadmapService.edit(id, roadmapDto.name, roadmapDto.startDate, roadmapDto.projectId);
         return ResponseEntity
                 .ok()
                 .body(result);

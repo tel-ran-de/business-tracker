@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class MilestoneController {
 
-    MilestoneService milestoneService;
+    private final MilestoneService milestoneService;
+
+    public MilestoneController(MilestoneService milestoneService) {
+        this.milestoneService = milestoneService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Milestone> createMilestone(@RequestBody @Valid MilestoneDto milestoneDto) throws URISyntaxException {
@@ -36,11 +40,10 @@ public class MilestoneController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Milestone> updateMilestone(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Milestone> updateMilestone(@PathVariable Long id,
                                                      @RequestBody @Valid MilestoneDto milestoneDto) throws HttpClientErrorException.BadRequest {
-        Milestone milestone = milestoneService.getById(milestoneDto.id);
 
-        Milestone result = milestoneService.edit(milestone, milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
+        Milestone result = milestoneService.edit(id, milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
 
         return ResponseEntity
                 .ok()

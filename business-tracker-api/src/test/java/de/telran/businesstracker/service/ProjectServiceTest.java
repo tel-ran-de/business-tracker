@@ -88,7 +88,9 @@ class ProjectServiceTest {
 
         String newName = "Small project";
 
-        projectService.edit(project, newName, user.getId());
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        projectService.edit(project.getId(), newName, user.getId());
 
         verify(projectRepository, times(1)).save(any());
         verify(projectRepository, times(1))

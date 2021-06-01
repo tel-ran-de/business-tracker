@@ -112,7 +112,8 @@ class ResourceServiceTest {
         Integer newHours = 80;
         Double newCast = 5000.00;
 
-        resourceService.edit(resource, newName, newHours, newCast, newTask.getId());
+        when(resourceRepository.findById(resource.getId())).thenReturn(Optional.of(resource));
+        resourceService.edit(resource.getId(), newName, newHours, newCast, newTask.getId());
 
         verify(resourceRepository, times(1)).save(any());
         verify(resourceRepository, times(1))

@@ -114,7 +114,8 @@ class MilestoneServiceTest {
         LocalDate newStartDay = LocalDate.now().plusDays(1);
         LocalDate newFinishDay = LocalDate.now().plusDays(15);
 
-        milestoneService.edit(milestone, newName, newStartDay, newFinishDay, newRoadmap.getId());
+        when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+        milestoneService.edit(milestone.getId(), newName, newStartDay, newFinishDay, newRoadmap.getId());
 
         verify(milestoneRepository, times(1)).save(any());
         verify(milestoneRepository, times(1))

@@ -37,9 +37,10 @@ public class MemberService {
         return member;
     }
 
-    public Member edit(Member member, String position, Long projectId, Long userId) {
+    public Member edit(Long id, String position, Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElseThrow(() -> new EntityNotFoundException(PROJECT_DOES_NOT_EXIST));
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST));
+        Member member = getById(id);
         member.setPosition(position);
         member.setProject(project);
         member.setUser(user);

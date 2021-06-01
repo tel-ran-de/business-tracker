@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class ProjectController {
 
-    ProjectService projectService;
+    private final ProjectService projectService;
+
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Project> createProject(@RequestBody @Valid ProjectDto projectDto) throws URISyntaxException {
@@ -36,11 +40,10 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Project> updateProject(@PathVariable Long id,
                                                  @RequestBody @Valid ProjectDto projectDto) throws HttpClientErrorException.BadRequest {
-        Project project = projectService.getById(projectDto.id);
 
-        Project result = projectService.edit(project, projectDto.name, projectDto.userId);
+        Project result = projectService.edit(id, projectDto.name, projectDto.userId);
 
         return ResponseEntity
                 .ok()

@@ -48,7 +48,7 @@ class TaskControllerTest {
         Assertions.assertEquals(milestone.getId(), task.getMilestone().getId());
         Assertions.assertEquals(member.getId(), task.getResponsibleMember().getId());
 
-        taskService.edit(task, "Task2", true, milestone.getId(), member.getId());
+        taskService.edit(task.getId(), "Task2", true, milestone.getId(), member.getId());
         Assertions.assertEquals("Task2", task.getName());
         Assertions.assertEquals(true, task.getFinished());
 

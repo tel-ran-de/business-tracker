@@ -4,6 +4,9 @@ import de.telran.businesstracker.data.User;
 import de.telran.businesstracker.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -18,5 +21,10 @@ public class UserService {
         userRepository.save(user);
         return user;
     }
+
+    public List<User> getAll() {
+        return new ArrayList<>(userRepository.findAll());
+    }
+
 }
 

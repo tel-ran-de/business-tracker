@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class TaskController {
 
-    TaskService taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Task> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
@@ -36,11 +40,9 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Task> updateTask(@PathVariable Long id,
                                            @RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
-        Task task = taskService.getById(taskDto.id);
-
-        Task result = taskService.edit(task, taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
+        Task result = taskService.edit(id, taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
 
         return ResponseEntity
                 .ok()

@@ -25,7 +25,11 @@ import java.util.List;
 @Transactional
 public class ResourceController {
 
-    ResourceService resourceService;
+    private final ResourceService resourceService;
+
+    public ResourceController(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
 
     @PostMapping("")
     public ResponseEntity<Resource> createResource(@RequestBody @Valid ResourceDto resourceDto) throws URISyntaxException {
@@ -36,11 +40,10 @@ public class ResourceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Resource> updateResource(@PathVariable(value = "id", required = false)
+    public ResponseEntity<Resource> updateResource(@PathVariable Long id,
                                                    @RequestBody @Valid ResourceDto resourceDto) throws HttpClientErrorException.BadRequest {
-        Resource resource = resourceService.getById(resourceDto.id);
 
-        Resource result = resourceService.edit(resource, resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);
+        Resource result = resourceService.edit(id, resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);
         return ResponseEntity
                 .ok()
                 .body(result);
