@@ -31,14 +31,10 @@ public class ProjectService {
         return project;
     }
 
-    public Project edit(Long id, String name, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST));
+    public void edit(Long id, String name) {
         Project project = getById(id);
-
         project.setName(name);
-        project.setUser(user);
         projectRepository.save(project);
-        return project;
     }
 
     public List<Project> getAll() {
