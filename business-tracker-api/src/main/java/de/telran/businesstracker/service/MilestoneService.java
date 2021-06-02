@@ -34,15 +34,12 @@ public class MilestoneService {
         return milestone;
     }
 
-    public Milestone edit(Long id, String name, LocalDate startDate, LocalDate finishDate, Long roadmapId) {
-        Roadmap roadmap = roadmapRepository.findById(roadmapId).orElseThrow(() -> new EntityNotFoundException(ROADMAP_DOES_NOT_EXIST));
+    public void edit(Long id, String name, LocalDate startDate, LocalDate finishDate) {
         Milestone milestone = getById(id);
         milestone.setName(name);
         milestone.setStartDate(startDate);
         milestone.setFinishDate(finishDate);
-        milestone.setRoadmap(roadmap);
         milestoneRepository.save(milestone);
-        return milestone;
     }
 
     public List<Milestone> getAll() {

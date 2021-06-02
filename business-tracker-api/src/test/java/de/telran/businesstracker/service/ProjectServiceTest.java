@@ -90,7 +90,7 @@ class ProjectServiceTest {
 
         when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
 
-        projectService.edit(project.getId(), newName, user.getId());
+        projectService.edit(project.getId(), newName);
 
         verify(projectRepository, times(1)).save(any());
         verify(projectRepository, times(1))

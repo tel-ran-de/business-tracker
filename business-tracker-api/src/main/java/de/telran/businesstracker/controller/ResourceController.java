@@ -2,7 +2,9 @@ package de.telran.businesstracker.controller;
 
 import de.telran.businesstracker.data.Resource;
 import de.telran.businesstracker.dto.ResourceDto;
+import de.telran.businesstracker.mapper.ResourceMapper;
 import de.telran.businesstracker.service.ResourceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -19,6 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/resources")
@@ -26,45 +30,45 @@ import java.util.List;
 public class ResourceController {
 
     private final ResourceService resourceService;
+    private final ResourceMapper resourceMapper;
 
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, ResourceMapper resourceMapper) {
         this.resourceService = resourceService;
+        this.resourceMapper = resourceMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<Resource> createResource(@RequestBody @Valid ResourceDto resourceDto) throws URISyntaxException {
-        Resource result = resourceService.add(resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);
+    public ResponseEntity<ResourceDto> createResource(@RequestBody @Valid ResourceDto resourceDto) throws URISyntaxException {
+        Resource resource = resourceService.add(resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);
+        resourceDto.id = resource.getId();
         return ResponseEntity
-                .created(new URI("/api/resource/" + result.getId()))
-                .body(result);
+                .created(new URI("/api/resource/" + resource.getId()))
+                .body(resourceDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Resource> updateResource(@PathVariable Long id,
-                                                   @RequestBody @Valid ResourceDto resourceDto) throws HttpClientErrorException.BadRequest {
-
-        Resource result = resourceService.edit(id, resourceDto.name, resourceDto.hours, resourceDto.cost, resourceDto.taskId);
-        return ResponseEntity
-                .ok()
-                .body(result);
+    @PutMapping("")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateResource(@RequestBody @Valid ResourceDto resourceDto) throws HttpClientErrorException.BadRequest {
+        resourceService.edit(resourceDto.id, resourceDto.name, resourceDto.hours, resourceDto.cost);
     }
 
     @GetMapping("")
-    public List<Resource> getAllResources() {
-        return resourceService.getAll();
+    public List<ResourceDto> getAllResources() {
+        return resourceService.getAll()
+                .stream()
+                .map(resourceMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> getResource(@PathVariable Long id) {
+    public ResourceDto getResource(@PathVariable Long id) {
         Resource resource = resourceService.getById(id);
-        return ResponseEntity.ok().body(resource);
+        return resourceMapper.toDto(resource);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteResource(@PathVariable Long id) {
         resourceService.removeById(id);
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 }

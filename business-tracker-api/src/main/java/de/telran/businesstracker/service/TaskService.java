@@ -38,16 +38,11 @@ public class TaskService {
         return task;
     }
 
-    public Task edit(Long id, String name, boolean finished, Long milestoneId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
-        Milestone milestone = milestoneRepository.findById(milestoneId).orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
+    public void edit(Long id, String name, boolean finished) {
         Task task = getById(id);
         task.setName(name);
         task.setFinished(finished);
-        task.setResponsibleMember(member);
-        task.setMilestone(milestone);
         taskRepository.save(task);
-        return task;
     }
 
     public List<Task> getAll() {

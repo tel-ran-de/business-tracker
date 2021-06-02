@@ -100,7 +100,7 @@ class RoadmapServiceTest {
         LocalDate newStartDay = LocalDate.now().plusDays(1);
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
-        roadmapService.edit(roadmap.getId(), newName, newStartDay, project.getId());
+        roadmapService.edit(roadmap.getId(), newName, newStartDay);
 
         verify(roadmapRepository, times(1)).save(any());
         verify(roadmapRepository, times(1))

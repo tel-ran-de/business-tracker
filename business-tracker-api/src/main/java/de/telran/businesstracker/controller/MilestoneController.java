@@ -2,7 +2,9 @@ package de.telran.businesstracker.controller;
 
 import de.telran.businesstracker.data.Milestone;
 import de.telran.businesstracker.dto.MilestoneDto;
+import de.telran.businesstracker.mapper.MilestoneMapper;
 import de.telran.businesstracker.service.MilestoneService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -19,6 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/milestones")
@@ -26,46 +30,46 @@ import java.util.List;
 public class MilestoneController {
 
     private final MilestoneService milestoneService;
+    private final MilestoneMapper milestoneMapper;
 
-    public MilestoneController(MilestoneService milestoneService) {
+    public MilestoneController(MilestoneService milestoneService, MilestoneMapper milestoneMapper) {
         this.milestoneService = milestoneService;
+        this.milestoneMapper = milestoneMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<Milestone> createMilestone(@RequestBody @Valid MilestoneDto milestoneDto) throws URISyntaxException {
-        Milestone result = milestoneService.add(milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
+    public ResponseEntity<MilestoneDto> createMilestone(@RequestBody @Valid MilestoneDto milestoneDto) throws URISyntaxException {
+        Milestone milestone = milestoneService.add(milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
+        milestoneDto.id = milestone.getId();
         return ResponseEntity
-                .created(new URI("/api/milestones/" + result.getId()))
-                .body(result);
+                .created(new URI("/api/milestones/" + milestone.getId()))
+                .body(milestoneDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Milestone> updateMilestone(@PathVariable Long id,
-                                                     @RequestBody @Valid MilestoneDto milestoneDto) throws HttpClientErrorException.BadRequest {
+    @PutMapping("")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMilestone(@RequestBody @Valid MilestoneDto milestoneDto) throws HttpClientErrorException.BadRequest {
 
-        Milestone result = milestoneService.edit(id, milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate, milestoneDto.roadmapId);
-
-        return ResponseEntity
-                .ok()
-                .body(result);
+        milestoneService.edit(milestoneDto.id, milestoneDto.name, milestoneDto.startDate, milestoneDto.finishDate);
     }
 
     @GetMapping("")
-    public List<Milestone> getAllMilestones() {
-        return milestoneService.getAll();
+    public List<MilestoneDto> getAllMilestones() {
+        return milestoneService.getAll()
+                .stream()
+                .map(milestoneMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Milestone> getMilestone(@PathVariable Long id) {
+    public MilestoneDto getMilestone(@PathVariable Long id) {
         Milestone milestone = milestoneService.getById(id);
-        return ResponseEntity.ok().body(milestone);
+        return milestoneMapper.toDto(milestone);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMilestone(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMilestone(@PathVariable Long id) {
         milestoneService.removeById(id);
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 }

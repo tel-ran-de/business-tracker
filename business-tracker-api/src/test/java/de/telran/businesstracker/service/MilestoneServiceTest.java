@@ -96,11 +96,8 @@ class MilestoneServiceTest {
         User user = new User(2L);
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
-        Roadmap newRoadmap = new Roadmap(9L, "Roadmap new", LocalDate.now(), project);
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
-        when(roadmapRepository.findById(newRoadmap.getId())).thenReturn(Optional.of(newRoadmap));
-
 
         Milestone milestone = Milestone.builder()
                 .id(1L)
@@ -115,14 +112,14 @@ class MilestoneServiceTest {
         LocalDate newFinishDay = LocalDate.now().plusDays(15);
 
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
-        milestoneService.edit(milestone.getId(), newName, newStartDay, newFinishDay, newRoadmap.getId());
+        milestoneService.edit(milestone.getId(), newName, newStartDay, newFinishDay);
 
         verify(milestoneRepository, times(1)).save(any());
         verify(milestoneRepository, times(1))
                 .save(argThat(savedMilestone -> savedMilestone.getName().equals(newName) &&
                         savedMilestone.getStartDate().equals(newStartDay) &&
                         savedMilestone.getFinishDate().equals(newFinishDay) &&
-                        savedMilestone.getRoadmap().getId().equals(newRoadmap.getId()))
+                        savedMilestone.getRoadmap().getId().equals(roadmap.getId()))
                 );
     }
 

@@ -2,7 +2,9 @@ package de.telran.businesstracker.controller;
 
 import de.telran.businesstracker.data.Member;
 import de.telran.businesstracker.dto.MemberDto;
+import de.telran.businesstracker.mapper.MemberMapper;
 import de.telran.businesstracker.service.MemberService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -19,53 +22,54 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/members")
 @Transactional
 public class MemberController {
 
-   public final MemberService memberService;
+    public final MemberService memberService;
+    public final MemberMapper memberMapper;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, MemberMapper memberMapper) {
         this.memberService = memberService;
+        this.memberMapper = memberMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<Member> createMember(@RequestBody @Valid MemberDto memberDto) throws URISyntaxException {
-        Member result = memberService.add(memberDto.position, memberDto.projectId, memberDto.userId);
+    public ResponseEntity<MemberDto> createMember(@RequestBody @Valid MemberDto memberDto) throws URISyntaxException {
+        Member member = memberService.add(memberDto.position, memberDto.projectId, memberDto.userId);
+        memberDto.id = member.getId();
         return ResponseEntity
-                .created(new URI("/api/members/" + result.getId()))
-                .body(result);
+                .created(new URI("/api/members/" + member.getId()))
+                .body(memberDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable Long id,
-                                               @RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
+    @PutMapping("")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMember(@RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
 
-        Member result = memberService.edit(id, memberDto.position, memberDto.projectId, memberDto.userId);
-
-        return ResponseEntity
-                .ok()
-                .body(result);
+        memberService.edit(memberDto.id, memberDto.position);
     }
 
     @GetMapping("")
-    public List<Member> getAllMembers() {
-        return memberService.getAll();
+    public List<MemberDto> getAllMembers() {
+        return memberService.getAll()
+                .stream()
+                .map(memberMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable Long id) {
+    public MemberDto getMember(@PathVariable Long id) {
         Member member = memberService.getById(id);
-        return ResponseEntity.ok().body(member);
+        return memberMapper.toDto(member);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMember(@PathVariable Long id) {
         memberService.removeById(id);
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 }

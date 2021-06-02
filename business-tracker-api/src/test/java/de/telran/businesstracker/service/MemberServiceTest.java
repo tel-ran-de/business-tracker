@@ -99,17 +99,14 @@ class MemberServiceTest {
                 .user(user)
                 .build();
 
-
-        Project newProject = new Project(4L, "Project1", user);
         String newPosition = "Senior";
-        when(projectRepository.findById(newProject.getId())).thenReturn(Optional.of(newProject));
 
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
-        memberService.edit(member.getId(), newPosition, newProject.getId(), user.getId());
+        memberService.edit(member.getId(), newPosition);
 
         verify(memberRepository, times(1)).save(any());
         verify(memberRepository, times(1)).save(argThat(savedMember -> savedMember.getPosition().equals(newPosition) &&
-                savedMember.getProject().getId().equals(newProject.getId()) &&
+                savedMember.getProject().getId().equals(project.getId()) &&
                 savedMember.getUser().getId().equals(user.getId()))
         );
     }

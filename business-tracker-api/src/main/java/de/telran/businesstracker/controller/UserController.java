@@ -2,6 +2,7 @@ package de.telran.businesstracker.controller;
 
 import de.telran.businesstracker.data.User;
 import de.telran.businesstracker.dto.UserDto;
+import de.telran.businesstracker.mapper.UserMapper;
 import de.telran.businesstracker.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,21 +24,27 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<User> createUser(@RequestBody @Valid UserDto userDto) throws URISyntaxException {
-        User result = userService.add();
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) throws URISyntaxException {
+        User user = userService.add();
+        userDto.id = user.getId();
         return ResponseEntity
-                .created(new URI("/api/users/" + result.getId()))
-                .body(result);
+                .created(new URI("/api/users/" + user.getId()))
+                .body(userDto);
     }
 
     @GetMapping("")
-    public List<User> getAllTasks() {
-        return userService.getAll();
+    public List<UserDto> getAllTasks() {
+        return userService.getAll()
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

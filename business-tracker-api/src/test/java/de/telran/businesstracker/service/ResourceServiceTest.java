@@ -94,11 +94,8 @@ class ResourceServiceTest {
         Member member = new Member();
         Milestone milestone = new Milestone();
         Task task = new Task(2L, "Task", false, milestone, member);
-        Task newTask = new Task(3L, "Task", false, milestone, member);
 
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
-        when(taskRepository.findById(newTask.getId())).thenReturn(Optional.of(newTask));
-
 
         Resource resource = Resource.builder()
                 .id(1L)
@@ -113,14 +110,14 @@ class ResourceServiceTest {
         Double newCast = 5000.00;
 
         when(resourceRepository.findById(resource.getId())).thenReturn(Optional.of(resource));
-        resourceService.edit(resource.getId(), newName, newHours, newCast, newTask.getId());
+        resourceService.edit(resource.getId(), newName, newHours, newCast);
 
         verify(resourceRepository, times(1)).save(any());
         verify(resourceRepository, times(1))
                 .save(argThat(savedResource -> savedResource.getName().equals(newName) &&
                         savedResource.getHours().equals(newHours) &&
                         savedResource.getCost().equals(newCast) &&
-                        savedResource.getTask().getId().equals(newTask.getId()))
+                        savedResource.getTask().getId().equals(task.getId()))
                 );
     }
 

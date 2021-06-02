@@ -31,15 +31,12 @@ public class ResourceService {
         return resource;
     }
 
-    public Resource edit(Long id, String name, Integer hours, Double cost, Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new EntityNotFoundException(TASK_DOES_NOT_EXIST));
+    public void edit(Long id, String name, Integer hours, Double cost) {
         Resource resource = getById(id);
         resource.setName(name);
         resource.setHours(hours);
         resource.setCost(cost);
-        resource.setTask(task);
         resourceRepository.save(resource);
-        return resource;
     }
 
     public List<Resource> getAll() {

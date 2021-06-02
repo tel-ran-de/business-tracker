@@ -115,21 +115,15 @@ class TaskServiceTest {
                 .responsibleMember(oldMember)
                 .build();
 
-        Member newMember = new Member(7L, "Dev", project, user);
-        Milestone newMilestone = new Milestone(12L, "newMilestone", LocalDate.now(),
-                LocalDate.now().plusDays(24), roadmap);
-
         String name = "newTask";
-        when(memberRepository.findById(newMember.getId())).thenReturn(Optional.of(newMember));
-        when(milestoneRepository.findById(newMilestone.getId())).thenReturn(Optional.of(newMilestone));
 
         when(taskRepository.findById(oldTask.getId())).thenReturn(Optional.of(oldTask));
-        taskService.edit(oldTask.getId(), name, true, newMilestone.getId(), newMember.getId());
+        taskService.edit(oldTask.getId(), name, true);
 
         verify(taskRepository, times(1)).save(any());
         verify(taskRepository, times(1)).save(argThat(savedTask -> savedTask.getName().equals(name) &&
-                savedTask.getFinished().equals(true) && savedTask.getMilestone().getId().equals(newMilestone.getId()) &&
-                savedTask.getResponsibleMember().getId().equals(newMember.getId()))
+                savedTask.getFinished().equals(true) && savedTask.getMilestone().getId().equals(oldMilestone.getId()) &&
+                savedTask.getResponsibleMember().getId().equals(oldMember.getId()))
         );
     }
 
