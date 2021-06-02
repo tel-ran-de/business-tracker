@@ -1,0 +1,20 @@
+<div class="mt-3">
+  <div class="d-flex justify-content-between align-items-start">
+    <h4>Resources</h4>
+    <a class="nav-link" style="cursor: pointer" *ngIf="!openForm" (click)="openForm = !openForm">Add resource</a>
+  </div>
+  <div class="mt-3">
+    <app-add-resource *ngIf="openForm" (formClosed)="openForm = false"></app-add-resource>
+  </div>
+  <div class="mt-3" style="max-height: 180px; overflow-y: auto">
+    <div class="bg-warning rounded p-2 ps-3 mt-1"
+         *ngFor="let res of resourceService.reloadAddedResourceList$ | async">
+      <div class="d-flex justify-content-between">
+        <div>
+          {{res.name}} {{res.time > 0 ? res.time : 0 | number}} h, {{res.cost > 0 ? res.cost : 0 | number}} $
+        </div>
+        <a style="cursor: pointer" (click)="onClickRemoveRes(res)">X</a>
+      </div>
+    </div>
+  </div>
+</div>

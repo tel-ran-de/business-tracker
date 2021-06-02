@@ -1,0 +1,35 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" id="add-resource-form">
+  <div class="mb-3">
+    <label for="add-resource-name" class="form-label">Executor*</label>
+    <input type="text" id="add-resource-name" class="form-control" placeholder="Исполнитель" formControlName="name"
+           [ngClass]="{'is-invalid' : form.controls.name.invalid && form.controls.name.touched}">
+    <!--error block -->
+    <ng-template [ngIf]="form.controls.name.touched && form.controls.name.invalid">
+      <div class="invalid-feedback" *ngIf="form.controls.name.errors.required"><sup>*</sup>The field cannot be empty
+      </div>
+    </ng-template>
+
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="mb-3">
+        <label for="add-resource-cost" class="form-label">Cost in $</label>
+        <input type="number" step="100" id="add-resource-cost" class="form-control" placeholder="cost in $"
+               formControlName="money">
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="mb-3">
+        <label for="add-resource-time" class="form-label">Time in hours</label>
+        <input type="number" step="1" id="add-resource-time" class="form-control" placeholder="time in h"
+               formControlName="time">
+      </div>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-primary" [disabled]="form.invalid" type="submit" id="add-resource-sbmt">Add</button>
+    <button class="btn btn-secondary" (click)="formClosed.emit()" type="submit" id="add-resource-cancel">Cancel /
+      Close
+    </button>
+  </div>
+</form>

@@ -1,0 +1,7 @@
+.statusbar-hover:hover {
+  border: none;
+  box-shadow: 0 10px 40px #ff7a59;
+  position: relative;
+  box-sizing: border-box;
+  transition: all 500ms ease;
+}
