@@ -6,7 +6,6 @@ import de.telran.businesstracker.mapper.RoadmapMapper;
 import de.telran.businesstracker.service.RoadmapService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/roadmaps")
-@Transactional
 public class RoadmapController {
 
     private final RoadmapService roadmapService;

@@ -5,7 +5,6 @@ import de.telran.businesstracker.dto.UserDto;
 import de.telran.businesstracker.mapper.UserMapper;
 import de.telran.businesstracker.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
-@Transactional
 public class UserController {
 
     private final UserService userService;
