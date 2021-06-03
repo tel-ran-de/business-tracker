@@ -1,6 +1,6 @@
 export class Delivery {
   id: number;
-  sprintId: number;
+  taskId: number;
 
   name: string;
 }

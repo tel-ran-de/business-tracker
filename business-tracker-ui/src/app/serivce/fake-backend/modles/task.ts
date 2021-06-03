@@ -1,16 +1,17 @@
-import {Sprint} from './sprint';
-import {Kpi} from './kpi';
+import {Member} from './member';
+import {Resource} from './resource';
+import {Delivery} from './delivery';
 
 export class Task {
   id: number;
-  roadMapId: number;
-
-  statusBarValue: number;
+  mileStoneId: number;
 
   name: string;
-  startDate: Date;
-  finishDate: Date;
+  active: boolean;
+  finished: boolean;
 
-  sprints: Sprint[];
-  kpis: Kpi[];
+  responsibleMembers: Member[];
+  resources: Resource[];
+  delivers: Delivery[];
+
 }

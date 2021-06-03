@@ -10,6 +10,6 @@ import {DeliveryToDisplay} from '../models/delivery/delivery-to-display';
 export class DeliveryService extends HttpOperation<DeliveryToDisplay, DeliveryToAdd> {
 
   constructor(private http: HttpClient) {
-    super('api/deliveries', 'api/deliveries', 'api/deliveries', 'api/deliveries', http);
+    super('api/delivery', 'api/delivery', 'api/delivery', 'api/delivery', http);
   }
 }

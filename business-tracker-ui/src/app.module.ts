@@ -7,27 +7,26 @@ import {AppRoutingModule} from './app-routing.module';
 import {MainComponent} from './app/pages/home/main/main.component';
 import {RouterModule} from '@angular/router';
 import {NgbAlertModule, NgbModule, NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
-import {TaskComponent} from './app/pages/home/main/task/task.component';
+import {MileStoneComponent} from './app/pages/home/main/mile-stone/mile-stone.component';
 import {TimeLineComponent} from './app/pages/home/main/time-line/time-line.component';
-import {SprintComponent} from './app/pages/home/main/sprint/sprint.component';
-import {TaskElementComponent} from './app/pages/home/main/task-element/task-element.component';
-import {AddSprintComponent} from './app/pages/home/main/sprint/add-sprint/add-sprint.component';
+import {TaskComponent} from './app/pages/home/main/sprint/task.component';
+import {AddTaskComponent} from './app/pages/home/main/sprint/add-task/add-task.component';
 import {AddResourceComponent} from './app/pages/home/main/sprint/add-resource/add-resource.component';
-import {SprintDetailsComponent} from './app/pages/home/main/sprint/sprint-details/sprint-details.component';
-import {FilterActiveSprintsPipe} from './app/serivce/pipes/filtern-active-sprints.pipe';
+import {TaskDetailsComponent} from './app/pages/home/main/sprint/task-details/task-details.component';
 import {HttpClientModule} from '@angular/common/http';
 import {PreLoaderComponent} from './app/pages/pre-loader/pre-loader.component';
 import {PreLoaderSmallComponent} from './app/pages/pre-loader-small/pre-loader-small.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ResourceListComponent} from './app/pages/home/main/sprint/resource-list/resource-list.component';
-import {KpiItemsComponent} from './app/pages/home/main/task-element/kpi-items/kpi-items.component';
-import {AddKpiComponent} from './app/pages/home/main/task-element/kpi-items/add-kpi/add-kpi.component';
-import {SprintElementComponent} from './app/pages/home/main/sprint/sprint-element/sprint-element.component';
+import {TaskElementComponent} from './app/pages/home/main/sprint/task-element/task-element.component';
 import {DeleteConfirmationModalComponent} from './app/pages/home/main/delete-confirmation-modal/delete-confirmation-modal.component';
-import {InMemoryDataService} from './app/serivce/fake-backend/in-memory-data.service';
+import {EditTaskComponent} from './app/pages/home/main/sprint/edit-task/edit-task.component';
+import {PageNotFoundComponent} from './app/pages/page-not-found/page-not-found.component';
+import {MileStoneElementComponent} from "./app/pages/home/main/mile-stone/ms-element/mile-stone-element.component";
+import {KpiItemsComponent} from "./app/pages/home/main/mile-stone/kpi-items/kpi-items.component";
+import {AddKpiComponent} from "./app/pages/home/main/mile-stone/kpi-items/add-kpi/add-kpi.component";
 import {HttpClientInMemoryWebApiModule} from "angular-in-memory-web-api";
-import {EditSprintComponent} from './app/pages/home/main/sprint/edit-sprint/edit-sprint.component';
-import { PageNotFoundComponent } from './app/pages/page-not-found/page-not-found.component';
+import {InMemoryDataService} from "./app/serivce/fake-backend/in-memory-data.service";
 
 
 @NgModule({
@@ -35,22 +34,21 @@ import { PageNotFoundComponent } from './app/pages/page-not-found/page-not-found
     AppComponent,
     HomeComponent,
     MainComponent,
-    TaskComponent,
+    MileStoneComponent,
     TimeLineComponent,
-    SprintComponent,
-    TaskElementComponent,
-    AddSprintComponent,
+    TaskComponent,
+    MileStoneElementComponent,
+    AddTaskComponent,
     AddResourceComponent,
-    SprintDetailsComponent,
-    FilterActiveSprintsPipe,
+    TaskDetailsComponent,
     PreLoaderComponent,
     PreLoaderSmallComponent,
     ResourceListComponent,
     KpiItemsComponent,
     AddKpiComponent,
-    SprintElementComponent,
+    TaskElementComponent,
     DeleteConfirmationModalComponent,
-    EditSprintComponent,
+    EditTaskComponent,
     PageNotFoundComponent,
   ],
   imports: [

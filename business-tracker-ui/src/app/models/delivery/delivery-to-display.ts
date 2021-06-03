@@ -1,6 +1,6 @@
 export class DeliveryToDisplay {
   id: number;
-  sprintId: number;
+  taskId: number;
 
   name: string;
 }

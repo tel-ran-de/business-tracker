@@ -10,6 +10,6 @@ import {MemberToAdd} from '../models/member/member-to-add';
 export class MemberService extends HttpOperation<MemberToDisplay, MemberToAdd> {
 
   constructor(private http: HttpClient) {
-    super('api/members', 'api/members', 'api/members', 'api/members', http);
+    super('api/member', 'api/member', 'api/member', 'api/member', http);
   }
 }

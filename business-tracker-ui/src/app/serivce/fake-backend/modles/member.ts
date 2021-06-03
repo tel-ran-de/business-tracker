@@ -1,6 +1,6 @@
 export class Member {
   id: number;
-  sprintId: number;
+  projectId: number;
   roadMapId: number;
 
   img: string;

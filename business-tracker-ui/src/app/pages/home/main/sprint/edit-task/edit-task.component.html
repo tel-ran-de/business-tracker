@@ -1,0 +1,66 @@
+<div class="mt-3" *ngIf="task">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="edit-sprint-form">
+    <div class="mb-3">
+      <label for="edit-sprint-input-name" class="form-label">Sprint name*</label>
+      <input type="text" id="edit-sprint-input-name" class="form-control" placeholder="Sprint name"
+             formControlName="name"
+             [ngClass]="{'is-invalid' : form.controls.name.invalid && form.controls.name.touched}">
+      <!--error block -->
+      <ng-template [ngIf]="form.controls.name.touched && form.controls.name.invalid">
+        <div class="invalid-feedback" *ngIf="form.controls.name.errors.required"><sup>*</sup>The field cannot be empty
+        </div>
+      </ng-template>
+
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="mb-3">
+          <label for="edit-sprint-input-deadline" class="form-label">Deadline</label>
+          <input type="date" id="edit-sprint-input-deadline" class="form-control">
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="mb-3">
+          <div class="mb-2">Status</div>
+          <div class="btn-group d-flex" id="edit-sprint-status-btn-groups">
+            <button class="btn w-100" type="button" id="edit-sprint-status-await"
+                    [class]="!task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
+                    (click)="task.active = false; task.finished = false">
+              await
+            </button>
+            <button class="btn w-100" type="button" id="edit-sprint-status-active"
+                    [class]="!task.finished && task.active ? 'btn-primary': 'btn-outline-secondary'"
+                    (click)="task.active = true; task.finished = false">
+              in process
+            </button>
+            <button class="btn w-100" type="button" id="edit-sprint-status-done"
+                    [class]="task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
+                    (click)="task.finished = true; task.active = false">
+              done
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3" *ngIf="selectedMember">
+      <label for="edit-sprint-select-member" class="form-label">Responsible for the result*</label>
+      <select id="edit-sprint-select-member" class="form-select" formControlName="member"
+              [compareWith]="compareMembers">
+        <option *ngFor="let member of members | async" [ngValue]="member">{{member.name}} {{member.lastName}}</option>
+      </select>
+    </div>
+    <div class="mb-3" *ngIf="delivery">
+      <label for="edit-sprint-select-delivery" class="form-label">Deliveries*</label>
+      <select id="edit-sprint-select-delivery" class="form-select" formControlName="delivery"
+              [compareWith]="compareDelivery">
+        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery.name}}</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary me-5" id="edit-form-sprint-sbmt" [disabled]="form.invalid">Submit
+      </button>
+      <button type="reset" class="btn btn-primary" id="edit-form-sprint-cancel" (click)="navigateToTaskPage()">Cancel
+      </button>
+    </div>
+  </form>
+</div>

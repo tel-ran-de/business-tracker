@@ -1,0 +1,62 @@
+<div class="mt-3" *ngIf="membersList">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="add-sprint-form">
+    <div class="mb-3">
+      <label for="add-sprint-input-name" class="form-label">Sprint name*</label>
+      <input type="text" id="add-sprint-input-name" class="form-control" placeholder="Sprint name"
+             formControlName="name"
+             [ngClass]="{'is-invalid' : form.controls.name.invalid && form.controls.name.touched}">
+      <!--error block -->
+      <ng-template [ngIf]="form.controls.name.touched && form.controls.name.invalid">
+        <div class="invalid-feedback" *ngIf="form.controls.name.errors.required"><sup>*</sup>The field cannot be empty
+        </div>
+      </ng-template>
+
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="mb-3">
+          <label for="add-sprint-input-deadline" class="form-label">Deadline</label>
+          <input type="date" id="add-sprint-input-deadline" class="form-control" disabled>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="mb-3">
+          <div class="mb-2">Status</div>
+          <div class="btn-group d-flex" id="add-sprint-status-btn-groups">
+            <button class="btn w-100" type="button" id="add-sprint-status-await"
+                    [class]="!finished && !active ? 'btn-primary': 'btn-outline-secondary'"
+                    (click)="active = false; finished = false">
+              await
+            </button>
+            <button class="btn w-100" type="button" id="add-sprint-status-active"
+                    [class]="!finished && active ? 'btn-primary': 'btn-outline-secondary'"
+                    (click)="active = true; finished = false">
+              in process
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="add-sprint-select-member" class="form-label">Responsible for the result*</label>
+      <select id="add-sprint-select-member" class="form-select" formControlName="member">
+        <option value="" disabled selected>Choose responsibly member</option>
+        <option *ngFor="let member of membersList | async" [ngValue]="member">
+          {{member.name}} {{member.lastName}} {{member.position}}</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="add-sprint-select-delivery" class="form-label">Deliveries</label>
+      <select id="add-sprint-select-delivery" class="form-select" formControlName="delivery">
+        <option value="" disabled selected>Choose delivery</option>
+        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery.name}}</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary me-5" [disabled]="form.invalid" id="add-form-sprint-sbmt">Submit
+      </button>
+      <button type="reset" class="btn btn-primary" (click)="navigateToTaskPage()" id="add-form-sprint-cancel">Cancel
+      </button>
+    </div>
+  </form>
+</div>

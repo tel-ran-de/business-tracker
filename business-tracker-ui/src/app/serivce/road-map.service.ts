@@ -10,6 +10,6 @@ import {RoadMapToAdd} from '../models/road-map/road-map-to-add';
 export class RoadMapService extends HttpOperation<RoadMapToDisplay, RoadMapToAdd> {
 
   constructor(private http: HttpClient) {
-    super('api/roadMaps', 'api/roadMaps', 'api/roadMaps', 'api/roadMaps', http);
+    super('api/roadmap', 'api/roadmap', 'api/roadmap', 'api/roadmap', http);
   }
 }

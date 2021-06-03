@@ -1,4 +1,4 @@
-<div class="py-5" *ngIf="members && kpis && sprints && roadMaps && tasks">
+<div class="py-5" *ngIf="members && kpis && activeTasks && roadMaps && mileStones">
   <div class="row">
     <ul class="nav">
       <li class="nav-item">
@@ -49,15 +49,15 @@
       <h6><b>Current sprints <small>(active)</small></b></h6>
       <ul class="list-group list-group-flush" [ngStyle]="{'max-height.px': 500}" style="overflow-y: auto">
         <li class="list-group-item list-group-item-action p-2 fw-bold"
-            *ngFor="let sprint of sprints | filterActiveSprints"
-            [class.list-group-item-success]="sprint.active">
-          {{sprint.name}}
+            *ngFor="let activeTask of activeTasks"
+            [class.list-group-item-success]="activeTask.active">
+          {{activeTask.name}}
         </li>
       </ul>
     </div>
   </div>
 </div>
 
-<div *ngIf="!(members && kpis && sprints && roadMaps && tasks)">
+<div *ngIf="!(members && kpis && activeTasks && roadMaps && mileStones)">
   <app-pre-loader></app-pre-loader>
 </div>

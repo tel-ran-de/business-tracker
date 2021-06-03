@@ -1,8 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {TaskService} from '../../../../serivce/task.service';
-import {TaskToDisplay} from '../../../../models/task/task-to-display';
+import {MileStoneService} from '../../../../serivce/mile-stone.service';
+import {MileStoneToDisplay} from '../../../../models/mile-stone/mile-stone-to-display';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-time-line',
@@ -20,23 +19,19 @@ export class TimeLineComponent implements OnInit, OnDestroy {
   @Input()
   height = 60;
 
-  productId: number;
-
-  tasks: TaskToDisplay[];
+  mileStones: MileStoneToDisplay[];
   private subscriptions: Subscription[] = [];
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute) {
+  constructor(private mileStoneService: MileStoneService) {
   }
 
   ngOnInit(): void {
-    const getTaskByIdSubscription = this.taskService
-      .getAllByParams(this.roadMapId, 'roadMapId').subscribe(value => this.tasks = value);
-
-    this.productId = +this.route.snapshot.paramMap.get('productId');
-    this.subscriptions.push(getTaskByIdSubscription);
+    const getMileStoneByRoadMapIdSubscription = this.mileStoneService
+      .getAllByParams(this.roadMapId, 'roadMapId').subscribe(value => this.mileStones = value);
+    this.subscriptions.push(getMileStoneByRoadMapIdSubscription);
   }
 
-  getStatus(task: TaskToDisplay): number {
+  getStatus(task: MileStoneToDisplay): number {
     const startDate = new Date(task.startDate).getTime();
     const endDate = new Date(task.finishDate).getTime();
     const now = new Date().getTime();

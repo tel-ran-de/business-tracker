@@ -1,9 +1,8 @@
 export class TaskToDisplay {
   id: number;
-  roadMapId: number;
-
+  mileStoneId: number;
 
   name: string;
-  startDate: Date;
-  finishDate: Date;
+  active: boolean;
+  finished: boolean;
 }

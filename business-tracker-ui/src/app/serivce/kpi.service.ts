@@ -14,6 +14,6 @@ export class KpiService extends HttpOperation<KpiToDisplay, KpiToAdd> {
   kpiDeleted$: Subject<KpiToDisplay> = new Subject<KpiToDisplay>();
 
   constructor(private httpClient: HttpClient) {
-    super('api/kpis', 'api/kpis', 'api/kpis', 'api/kpis', httpClient);
+    super('api/kpi', 'api/kpi', 'api/kpi', 'api/kpi', httpClient);
   }
 }

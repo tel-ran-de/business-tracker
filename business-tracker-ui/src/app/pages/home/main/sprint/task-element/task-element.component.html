@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-between">
+  <h5>Sprints</h5>
+  <a class="nav-link" [routerLink]="['mile-stones',mileStoneId ,'sprint']" style="cursor: pointer">add sprint</a>
+</div>
+
+<div class="list-group">
+  <div class="btn-group" *ngFor="let task of tasks" [ngStyle]="{'max-height.px': 230}"
+       style="overflow-y: auto">
+    <button type="button" class="list-group-item list-group-item-action mt-1"
+            [class.list-group-item-success]="task.active"
+            [class.list-group-item-primary]="task.finished"
+            [class.list-group-item-info]="!task.finished && !task.active"
+            [routerLink]="['mile-stones',mileStoneId ,'sprint', task.id]">{{task.name}}</button>
+    <button class="list-group-item list-group-item-action mt-1" type="button"
+            (click)="onClickRemoveSprint(task)" style="max-width: 50px">
+      <i class="fs-4 text-warning bi bi-x-circle"></i>
+      <span class="visually-hidden">Remove</span>
+    </button>
+  </div>
+</div>

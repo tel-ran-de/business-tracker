@@ -1,11 +1,10 @@
 import {Member} from './member';
-import {Task} from './task';
+import {MileStone} from './mileStone';
 
 export class RoadMap {
   id: number;
-
   name: string;
 
   members: Member[];
-  tasks: Task[];
+  mileStones: MileStone[];
 }

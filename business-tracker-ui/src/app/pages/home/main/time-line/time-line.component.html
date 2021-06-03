@@ -1,6 +1,6 @@
-<div [class.d-flex]="!horizontal" *ngIf="tasks">
+<div [class.d-flex]="!horizontal" *ngIf="mileStones">
 
-  <div class="flex-fill" *ngFor="let task of tasks">
+  <div class="flex-fill" *ngFor="let task of mileStones">
     <h6>{{task.name}}</h6>
     <ngb-progressbar class="stat me-1" [max]="100" [value]="getStatus(task)" [showValue]="true"
                      ngbTooltip="from: {{task.startDate | date :'dd MMM'}} to: {{task.finishDate | date :'dd MMM'}}"
@@ -13,6 +13,6 @@
 
 </div>
 
-<div *ngIf="!(tasks)">
+<div *ngIf="!(mileStones)">
   <app-pre-loader-small></app-pre-loader-small>
 </div>

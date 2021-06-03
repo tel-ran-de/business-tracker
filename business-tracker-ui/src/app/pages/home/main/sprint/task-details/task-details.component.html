@@ -1,0 +1,27 @@
+<div class="py-5" *ngIf="mileStoneToDisplay">
+  <div class="row">
+    <h1>Butler</h1>
+    <h5 class="h5 w-50 text-wrap">
+      Про-активный ассистент, знающий, что делает твоя команда и понимающий контекст твоего проекта.
+      Конспертирует совещания, отслеживает даты и организует проектную деятельность</h5>
+  </div>
+  <hr>
+  <div class="row mt-3" *ngIf="taskFound">
+    <h4>Sprint details</h4>
+    <div class="col-8">
+      <app-edit-task (sprintFound)="taskFound = $event"></app-edit-task>
+    </div>
+    <div class="col-4">
+      <app-resource-list></app-resource-list>
+    </div>
+  </div>
+
+  <div *ngIf="!taskFound">
+    This sprint does not exist
+    <a class="nav-link" routerLink="../">add new sprint</a>
+  </div>
+</div>
+
+<div *ngIf="!mileStoneToDisplay">
+  <app-pre-loader></app-pre-loader>
+</div>

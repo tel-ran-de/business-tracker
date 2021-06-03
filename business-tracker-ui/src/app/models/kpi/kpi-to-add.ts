@@ -1,6 +1,6 @@
 export class KpiToAdd {
   id: number;
-  taskId: number;
+  mileStoneId: number;
 
   name: string;
 }

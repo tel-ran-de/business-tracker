@@ -1,6 +1,6 @@
 export class Resource {
   id: number;
-  sprintId: number;
+  taskId: number;
 
   name: string;
   cost: number;

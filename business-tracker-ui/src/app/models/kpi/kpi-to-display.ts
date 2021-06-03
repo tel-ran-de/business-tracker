@@ -1,6 +1,5 @@
 export class KpiToDisplay {
   id: number;
-  taskId: number;
-
+  mileStoneId: number;
   name: string;
 }

@@ -16,7 +16,7 @@ export class ResourceService extends HttpOperation<ResourceToDisplay, ResourceTo
   reloadResourceListRemoved$: Subject<ResourceToDisplay> = new Subject<ResourceToDisplay>();
 
   constructor(private http: HttpClient) {
-    super('api/resources', 'api/resources', 'api/resources', 'api/resources', http);
+    super('api/resource', 'api/resource', 'api/resource', 'api/resource', http);
   }
 
   transferAddedResource(addedResource: ResourceToAdd): void {

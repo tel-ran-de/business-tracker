@@ -10,6 +10,6 @@ import {HttpClient} from '@angular/common/http';
 export class ResponsibleMembersService extends HttpOperation<MemberToDisplay, MemberToAdd> {
 
   constructor(private http: HttpClient) {
-    super('api/responsibleMembers', 'api/responsibleMembers', 'api/responsibleMembers', 'api/responsibleMembers', http);
+    super('api/responsibleMember', 'api/responsibleMember', 'api/responsibleMember', 'api/responsibleMember', http);
   }
 }

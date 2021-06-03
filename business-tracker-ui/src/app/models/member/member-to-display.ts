@@ -1,6 +1,6 @@
 export class MemberToDisplay {
   id: number;
-  sprintId: number;
+  taskId: number;
   roadMapId: number;
 
   img: string;

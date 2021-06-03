@@ -1,9 +1,8 @@
 export class TaskToAdd {
   id: number;
-  roadMapId: number;
-
+  mileStoneId: number;
 
   name: string;
-  startDate: Date;
-  finishDate: Date;
+  active: boolean;
+  finished: boolean;
 }

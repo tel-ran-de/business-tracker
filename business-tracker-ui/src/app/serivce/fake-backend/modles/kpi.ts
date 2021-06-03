@@ -1,6 +1,6 @@
 export class Kpi {
   id: number;
-  taskId: number;
+  mileStoneId: number;
 
   name: string;
 }
