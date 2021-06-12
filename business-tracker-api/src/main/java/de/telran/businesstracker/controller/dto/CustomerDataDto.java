@@ -1,15 +1,10 @@
-package de.telran.businesstracker.dto;
+package de.telran.businesstracker.controller.dto;
 
 import lombok.*;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.List;
 
 @Builder
-//@Getter
-//@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerDataDto {
@@ -26,7 +21,10 @@ public class CustomerDataDto {
     public List<String> interest;
     public List<String> businessGoals;
     public int engLvl;
+    public boolean isSubmitted;
+
     //TODO video
     public String videoUrl1;
     public String videoUrl2;
+
 }

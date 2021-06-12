@@ -1,7 +1,7 @@
 package de.telran.businesstracker.service;
 
-import de.telran.businesstracker.data.Milestone;
-import de.telran.businesstracker.data.Roadmap;
+import de.telran.businesstracker.model.Milestone;
+import de.telran.businesstracker.model.Roadmap;
 import de.telran.businesstracker.repositories.MilestoneRepository;
 import de.telran.businesstracker.repositories.RoadmapRepository;
 import org.springframework.stereotype.Service;
