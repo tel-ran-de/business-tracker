@@ -1,4 +1,4 @@
-package de.telran.businesstracker.data;
+package de.telran.businesstracker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,20 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
-public class User {
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    private String name;
+
+    @ManyToOne
+    private User user;
+
 }
