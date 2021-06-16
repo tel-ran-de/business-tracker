@@ -4,8 +4,6 @@ import de.telran.businesstracker.model.*;
 import de.telran.businesstracker.repositories.MilestoneRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,13 +46,7 @@ public class KpiServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
                 kpiService.add(milestone.getId(), "some kpi name"));
