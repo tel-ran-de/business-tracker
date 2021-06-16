@@ -1,7 +1,7 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.data.Milestone;
-import de.telran.businesstracker.dto.MilestoneDto;
+import de.telran.businesstracker.model.Milestone;
+import de.telran.businesstracker.controller.dto.MilestoneDto;
 import de.telran.businesstracker.mapper.MilestoneMapper;
 import de.telran.businesstracker.service.MilestoneService;
 import org.springframework.http.HttpStatus;

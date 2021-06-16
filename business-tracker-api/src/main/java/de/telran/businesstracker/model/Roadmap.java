@@ -1,4 +1,4 @@
-package de.telran.businesstracker.data;
+package de.telran.businesstracker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import java.time.LocalDate;
 
+
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Milestone {
+public class Roadmap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -29,8 +30,6 @@ public class Milestone {
 
     private LocalDate startDate;
 
-    private LocalDate finishDate;
-
     @ManyToOne
-    private Roadmap roadmap;
+    private Project project;
 }

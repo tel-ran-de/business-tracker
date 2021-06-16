@@ -1,4 +1,4 @@
-package de.telran.businesstracker.data;
+package de.telran.businesstracker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import javax.persistence.SequenceGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -26,7 +26,11 @@ public class Project {
 
     private String name;
 
-    @ManyToOne
-    private User user;
+    private Boolean finished;
 
+    @ManyToOne
+    private Milestone milestone;
+
+    @ManyToOne
+    private Member responsibleMember;
 }
