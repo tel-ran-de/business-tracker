@@ -50,7 +50,7 @@ class IntegrationTaskTest {
         Member member = Member.builder().build();
         memberRepository.save(member);
 
-        Milestone milestone = Milestone.builder().build();
+        Milestone milestone = new Milestone();
         milestoneRepository.save(milestone);
 
 
