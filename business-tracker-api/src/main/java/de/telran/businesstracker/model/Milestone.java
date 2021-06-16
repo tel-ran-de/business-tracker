@@ -5,13 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -33,4 +30,15 @@ public class Milestone {
 
     @ManyToOne
     private Roadmap roadmap;
+
+    @ElementCollection
+    private Set<String> kpis = new HashSet<>();
+
+    public void addKpi(String kpi) {
+        this.kpis.add(kpi);
+    }
+
+    public void removeKpi(String kpi) {
+        this.kpis.remove(kpi);
+    }
 }
