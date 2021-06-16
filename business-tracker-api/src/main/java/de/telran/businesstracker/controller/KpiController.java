@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/kpi")
+@RequestMapping("/api")
 public class KpiController {
 
     private final KpiService kpiService;
@@ -17,12 +17,12 @@ public class KpiController {
         this.kpiService = kpiService;
     }
 
-    @PostMapping("/{id}")
-    public void addKpi(@PathVariable long id, @RequestBody KpiDto kpi) {
+    @PostMapping("/kpi/{id}")
+    public void addKpi(@RequestBody KpiDto kpi, @PathVariable long id) {
         kpiService.add(id, kpi.kpi);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/mile-stone/{id}/kpis")
     public List<KpiDto> getKpiByMileStone(@PathVariable long id) {
         return kpiService.getAllKpiByMileStone(id)
                 .stream()
@@ -30,7 +30,7 @@ public class KpiController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}/project")
+    @GetMapping("/project/{id}/kpis")
     public List<KpiDto> getKpiByProject(@PathVariable long id) {
         return kpiService.getAllKpiByProject(id)
                 .stream()
@@ -38,7 +38,7 @@ public class KpiController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}/road-map")
+    @GetMapping("/road-map/{id}/kpis")
     public List<KpiDto> getKpiByRoadMap(@PathVariable long id) {
         return kpiService.getAllKpiByRoadMap(id)
                 .stream()
@@ -46,7 +46,7 @@ public class KpiController {
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/mile-stone/{id}/kpis")
     public void getKpiByRoadMap(@PathVariable long id, @RequestParam String kpi) {
         kpiService.removeKpi(id, kpi);
     }
