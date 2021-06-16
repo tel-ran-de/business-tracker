@@ -1,4 +1,4 @@
-package de.telran.businesstracker.controller;
+package de.telran.businesstracker.integration;
 
 import de.telran.businesstracker.model.Member;
 import de.telran.businesstracker.model.Milestone;
@@ -16,11 +16,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
 @SpringBootTest
-class TaskControllerTest {
+class IntegrationTaskTest {
 
     @Autowired
     UserRepository userRepository;
@@ -39,16 +40,20 @@ class TaskControllerTest {
     public void integrationTestTask() {
         User user = new User();
         userRepository.save(user);
+
         Project project = Project.builder().build();
-        Roadmap roadmap = Roadmap.builder().build();
         projectRepository.save(project);
+
+        Roadmap roadmap = Roadmap.builder().build();
         roadmapRepository.save(roadmap);
-       // Member member = new Member(1L, "Boss", project, user);
+
         Member member = Member.builder().build();
         memberRepository.save(member);
+
         Milestone milestone = Milestone.builder().build();
-       // Milestone milestone = new Milestone(2L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(3), roadmap);
         milestoneRepository.save(milestone);
+
+
         Task task = taskService.add("Task1", false, milestone.getId(), member.getId());
 
         Assertions.assertEquals("Task1", task.getName());
@@ -57,7 +62,7 @@ class TaskControllerTest {
         Assertions.assertEquals(member.getId(), task.getResponsibleMember().getId());
 
         taskService.edit(task.getId(), "Task2", true);
-       Task editedTask = taskService.getById(task.getId());
+        Task editedTask = taskService.getById(task.getId());
         Assertions.assertEquals("Task2", editedTask.getName());
         Assertions.assertEquals(true, editedTask.getFinished());
 
@@ -74,11 +79,10 @@ class TaskControllerTest {
         List<Task> expected1 = taskService.getAll();
         Assertions.assertEquals(expected1.size(), 0);
 
-        milestoneRepository.delete(milestone);
-        memberRepository.delete(member);
-        roadmapRepository.delete(roadmap);
-        projectRepository.delete(project);
-        userRepository.delete(user);
-
+        milestoneRepository.deleteAll();
+        memberRepository.deleteAll();
+        roadmapRepository.deleteAll();
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

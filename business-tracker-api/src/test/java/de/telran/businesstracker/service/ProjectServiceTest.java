@@ -5,10 +5,12 @@ import de.telran.businesstracker.model.User;
 import de.telran.businesstracker.repositories.ProjectRepository;
 import de.telran.businesstracker.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityNotFoundException;
@@ -24,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ProjectServiceTest {
 
     @Mock
@@ -38,8 +40,8 @@ class ProjectServiceTest {
 
     @Test
     public void testAdd_success() {
-        User user = new User(2L);
 
+        User user = new User(2L);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         Project project = Project.builder()
@@ -58,7 +60,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    public void testAdd_usertDoesNotExist_EntityNotFoundException() {
+    public void testAdd_userDoesNotExist_EntityNotFoundException() {
         User user = new User(2L);
 
         Project project = Project.builder()
@@ -77,13 +79,10 @@ class ProjectServiceTest {
     @Test
     public void projectEdit_projectExist_fieldsChanged() {
 
-        User user = new User(2L);
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-
         Project project = Project.builder()
                 .id(1L)
                 .name("Great project")
-                .user(user)
+                .user(new User(2L))
                 .build();
 
         String newName = "Small project";
@@ -95,7 +94,7 @@ class ProjectServiceTest {
         verify(projectRepository, times(1)).save(any());
         verify(projectRepository, times(1))
                 .save(argThat(savedProject -> savedProject.getName().equals(newName) &&
-                        savedProject.getUser().getId().equals(user.getId()))
+                        savedProject.getUser().getId() == 2)
                 );
     }
 

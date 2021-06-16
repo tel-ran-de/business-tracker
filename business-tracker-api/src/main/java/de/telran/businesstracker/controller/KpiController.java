@@ -45,4 +45,9 @@ public class KpiController {
                 .map(KpiDto::new)
                 .collect(Collectors.toList());
     }
+
+    @DeleteMapping("/{id}")
+    public void getKpiByRoadMap(@PathVariable long id, @RequestParam String kpi) {
+        kpiService.removeKpi(id, kpi);
+    }
 }

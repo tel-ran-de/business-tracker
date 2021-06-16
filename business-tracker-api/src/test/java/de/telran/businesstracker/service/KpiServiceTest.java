@@ -1,12 +1,11 @@
 package de.telran.businesstracker.service;
 
-import de.telran.businesstracker.model.Milestone;
-import de.telran.businesstracker.model.Project;
-import de.telran.businesstracker.model.Roadmap;
-import de.telran.businesstracker.model.User;
+import de.telran.businesstracker.model.*;
 import de.telran.businesstracker.repositories.MilestoneRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -128,13 +127,12 @@ public class KpiServiceTest {
     }
 
     @Test
-    public void testGetAllKpisByProject_oneRoadMapWithTwoMileStones_noKpi() {
+    public void testGetAllKpisByProject_oneRoadMapWithTwoMileStones_noKpiExist_emptySet() {
         User user = new User(2L);
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap1 = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
         Milestone milestone1 = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap1, new HashSet<>());
         Milestone milestone2 = new Milestone(7L, "Milestone_02", LocalDate.now(), LocalDate.now().plusDays(10), roadmap1, new HashSet<>());
-
 
         when(repository.findById(milestone1.getId())).thenReturn(Optional.of(milestone1));
         when(repository.findAllByRoadmapProject(project)).thenReturn(Arrays.asList(milestone1, milestone2));
@@ -146,5 +144,105 @@ public class KpiServiceTest {
         assertEquals(0, kpis.size());
     }
 
+    @Test
+    public void testGetAllKpiByMileStone_fourElementFound() {
+        User user = new User(2L);
+        Project project = new Project(4L, "Great project", user);
+        Roadmap roadmap = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
+        Milestone milestone = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestone.addKpi("kpi_01_01");
+        milestone.addKpi("kpi_01_02");
+        milestone.addKpi("kpi_01_03");
+        milestone.addKpi("kpi_01_04");
 
+        when(repository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+        Set<String> kpis = kpiService.getAllKpiByMileStone(milestone.getId());
+
+        verify(repository, times(1)).findById(milestone.getId());
+        assertEquals(4, kpis.size());
+    }
+
+    @Test
+    public void testGetAllKpiByBMileStone_emptyList() {
+        User user = new User(2L);
+        Project project = new Project(4L, "Great project", user);
+        Roadmap roadmap = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
+        Milestone milestone = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+
+        when(repository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+        Set<String> kpis = kpiService.getAllKpiByMileStone(milestone.getId());
+
+        verify(repository, times(1)).findById(milestone.getId());
+        assertEquals(0, kpis.size());
+    }
+
+
+    @Test
+    public void testGetAllKpiByRoadMap_oneProjectOneRoadMapsTreeMileStoneOnEachRoadMap_fourElementFound() {
+        User user = new User(2L);
+        Project project = new Project(4L, "Great project", user);
+        Roadmap roadmap = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
+
+        Milestone milestone1 = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestone1.addKpi("kpi_01_01");
+
+        Milestone milestone2 = new Milestone(9L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestone2.addKpi("kpi_01_01");
+        milestone2.addKpi("kpi_01_02");
+
+        Milestone milestone3 = new Milestone(8L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestone3.addKpi("kpi_01_01");
+
+
+        when(repository.findById(milestone1.getId())).thenReturn(Optional.of(milestone1));
+        when(repository.findAllByRoadmap(roadmap)).thenReturn(Arrays.asList(milestone1, milestone2, milestone3));
+
+        List<String> kpis = kpiService.getAllKpiByRoadMap(milestone1.getId());
+
+        verify(repository, times(1)).findById(milestone1.getId());
+        verify(repository, times(1)).findAllByRoadmap(roadmap);
+
+        assertEquals(4, kpis.size());
+    }
+
+
+    @Test
+    public void testGetAllKpiByRoadMap_emptyList() {
+        User user = new User(2L);
+        Project project = new Project(4L, "Great project", user);
+        Roadmap roadmap = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
+        Milestone milestone = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+
+        when(repository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+        Set<String> kpis = kpiService.getAllKpiByMileStone(milestone.getId());
+
+        verify(repository, times(1)).findById(milestone.getId());
+        assertEquals(0, kpis.size());
+    }
+
+    @Test
+    public void testRemoveKpi_kpiRemoved() {
+        User user = new User(2L);
+        Project project = new Project(4L, "Great project", user);
+        Roadmap roadmap = new Roadmap(3L, "Roadmap_01", LocalDate.now(), project);
+        Milestone milestone = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestone.addKpi("kpi_01_01");
+        milestone.addKpi("kpi_01_02");
+
+        Milestone milestoneAfterRemovingKpi = new Milestone(1L, "Milestone_01", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+        milestoneAfterRemovingKpi.addKpi("kpi_01_02");
+
+        when(repository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+
+        kpiService.removeKpi(milestone.getId(), "kpi_01_01");
+
+        verify(repository, times(1)).findById(milestone.getId());
+        verify(repository, times(1)).save(argThat(
+                argument ->
+                        argument.getId().equals(milestoneAfterRemovingKpi.getId()) &&
+                                argument.getKpis().size() == milestoneAfterRemovingKpi.getKpis().size() &&
+                                argument.getName().equals(milestoneAfterRemovingKpi.getName()) &&
+                                !argument.getKpis().contains("kpi_01_01")
+        ));
+    }
 }
