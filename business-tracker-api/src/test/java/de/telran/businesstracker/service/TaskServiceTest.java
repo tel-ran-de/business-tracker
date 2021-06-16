@@ -54,7 +54,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
@@ -82,7 +82,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task task = Task.builder()
                 .id(5L)
@@ -107,7 +107,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member oldMember = new Member(1L, "Boss", project, user);
         Milestone oldMilestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task oldTask = Task.builder()
                 .id(5L)
@@ -136,7 +136,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task task1 = Task.builder()
                 .id(5L)
@@ -179,7 +179,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task task = Task.builder()
                 .id(5L)
@@ -208,7 +208,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task task = Task.builder()
                 .id(5L)
@@ -236,7 +236,7 @@ class TaskServiceTest {
         Roadmap roadmap = new Roadmap();
         Member member = new Member(1L, "Boss", project, user);
         Milestone milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap, new HashSet<>());
+                LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Task task = Task.builder()
                 .id(5L)
