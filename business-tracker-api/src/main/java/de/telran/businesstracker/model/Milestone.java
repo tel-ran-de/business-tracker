@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,7 +32,7 @@ public class Milestone {
     private Roadmap roadmap;
 
     @ElementCollection
-    private Set<String> kpis = new HashSet<>();
+    private List<String> kpis = new ArrayList<>();
 
     public void addKpi(String kpi) {
         this.kpis.add(kpi);
