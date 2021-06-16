@@ -1,5 +1,8 @@
 package de.telran.businesstracker.controller.dto;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class KpiDto {
     public String kpi;
 

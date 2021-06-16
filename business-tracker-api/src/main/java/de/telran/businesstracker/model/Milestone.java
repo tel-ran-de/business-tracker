@@ -1,6 +1,9 @@
 package de.telran.businesstracker.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -43,9 +46,5 @@ public class Milestone {
 
     public void addKpi(String kpi) {
         this.kpis.add(kpi);
-    }
-
-    public void removeKpi(String kpi) {
-        this.kpis.remove(kpi);
     }
 }

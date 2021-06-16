@@ -1,22 +1,12 @@
 package de.telran.businesstracker.integration;
 
-import de.telran.businesstracker.model.Member;
-import de.telran.businesstracker.model.Milestone;
-import de.telran.businesstracker.model.Project;
-import de.telran.businesstracker.model.Roadmap;
-import de.telran.businesstracker.model.Task;
-import de.telran.businesstracker.model.User;
-import de.telran.businesstracker.repositories.MemberRepository;
-import de.telran.businesstracker.repositories.MilestoneRepository;
-import de.telran.businesstracker.repositories.ProjectRepository;
-import de.telran.businesstracker.repositories.RoadmapRepository;
-import de.telran.businesstracker.repositories.UserRepository;
+import de.telran.businesstracker.model.*;
+import de.telran.businesstracker.repositories.*;
 import de.telran.businesstracker.service.TaskService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
@@ -78,11 +68,5 @@ class IntegrationTaskTest {
 
         List<Task> expected1 = taskService.getAll();
         Assertions.assertEquals(expected1.size(), 0);
-
-        milestoneRepository.deleteAll();
-        memberRepository.deleteAll();
-        roadmapRepository.deleteAll();
-        projectRepository.deleteAll();
-        userRepository.deleteAll();
     }
 }
