@@ -30,18 +30,23 @@ public class TaskService {
         this.milestoneRepository = milestoneRepository;
     }
 
-    public Task add(String name, boolean finished, Long milestoneId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
+    public Task add(String name, boolean finished, boolean active, String delivery, Long milestoneId, Long memberId) {
+        Member responsibleMember = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
         Milestone milestone = milestoneRepository.findById(milestoneId).orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
-        Task task = Task.builder().name(name).milestone(milestone).finished(finished).responsibleMember(member).build();
-        taskRepository.save(task);
-        return task;
+
+        Task task = new Task(name, finished, active, delivery, milestone, responsibleMember);
+
+        return taskRepository.save(task);
     }
 
-    public void edit(Long id, String name, boolean finished) {
+    public void edit(Long id, String name, boolean finished, boolean active, String delivery) {
         Task task = getById(id);
+
         task.setName(name);
         task.setFinished(finished);
+        task.setActive(active);
+        task.setDelivery(delivery);
+
         taskRepository.save(task);
     }
 

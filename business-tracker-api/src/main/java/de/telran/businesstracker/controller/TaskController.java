@@ -1,20 +1,12 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.model.Task;
 import de.telran.businesstracker.controller.dto.TaskDto;
 import de.telran.businesstracker.mapper.TaskMapper;
+import de.telran.businesstracker.model.Task;
 import de.telran.businesstracker.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -37,17 +29,17 @@ public class TaskController {
 
     @PostMapping("")
     public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
-        Task task = taskService.add(taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
-        taskDto.id = task.getId();
+        Task task = taskService.add(taskDto.name, taskDto.finished, taskDto.acitve, taskDto.delivery, taskDto.milestoneId, taskDto.memberId);
+        TaskDto dto = taskMapper.toDto(task);
         return ResponseEntity
                 .created(new URI("/api/tasks/" + task.getId()))
-                .body(taskDto);
+                .body(dto);
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateTask(@RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
-        taskService.edit(taskDto.id, taskDto.name, taskDto.finished);
+        taskService.edit(taskDto.id, taskDto.name, taskDto.finished, taskDto.acitve, taskDto.delivery);
     }
 
     @GetMapping("")
