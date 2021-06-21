@@ -4,12 +4,10 @@ import {MemberToDisplay} from "../../../../../models/member/member-to-display";
 import {Observable, Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TaskService} from "../../../../../serivce/task.service";
-import {DeliveryService} from "../../../../../serivce/delivery.service";
 import {ResourceService} from "../../../../../serivce/resource.service";
 import {MemberService} from "../../../../../serivce/member.service";
 import {ResponsibleMembersService} from "../../../../../serivce/responsible-members.service";
 import {TaskToDisplay} from "../../../../../models/task/task-to-display";
-import {DeliveryToDisplay} from "../../../../../models/delivery/delivery-to-display";
 import {ResourceToDisplay} from "../../../../../models/resource/resource-to-display";
 
 @Component({
@@ -27,11 +25,8 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   selectedMember: MemberToDisplay;
   task: TaskToDisplay;
 
-  delivery: DeliveryToDisplay;
-  deliveries: DeliveryToDisplay[] = [
-    {name: 'Документ', taskId: undefined, id: 1},
-    {name: 'Презентация', taskId: undefined, id: 2}
-  ];
+  deliveries: string[] = ['Document', 'Presentation', "Nothing"];
+
   members: Observable<MemberToDisplay[]>;
   private resources: ResourceToDisplay[] = [];
   private resourceIdsToRemove: number[] = [];
@@ -42,7 +37,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
               private taskService: TaskService,
-              private deliveryService: DeliveryService,
               private resourceService: ResourceService,
               public memberService: MemberService,
               private responsibleMembersService: ResponsibleMembersService,
@@ -86,7 +80,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   onSubmit(): void {
 
     let taskOk = false;
-    let deliveryOk = false;
     let memberOk = false;
     let addResourceOk = false;
     let removeResourceOk = false;
@@ -95,26 +88,11 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     const updateTaskSub = this.taskService.updateById(this.task.id, this.task)
       .subscribe(() => {
         taskOk = true;
-        if (memberOk && deliveryOk && addResourceOk && removeResourceOk) {
+        if (memberOk && addResourceOk && removeResourceOk) {
           this.navigateToTaskPage();
         }
       }, error => console.error(error));
-    //Delivery
-    if (this.delivery) {
-      this.delivery.name = this.form.controls.delivery.value.name;
 
-      const updateDeliverySub = this.deliveryService.updateById(this.delivery.id, this.delivery)
-        .subscribe(() => {
-          deliveryOk = true
-          if (memberOk && taskOk && addResourceOk && removeResourceOk) {
-            this.navigateToTaskPage();
-          }
-        }, error => console.error(error));
-      this.subscriptions.push(updateDeliverySub);
-
-    } else {
-      deliveryOk = true;
-    }
     //Responsible member
     if (this.form.controls.member.value) {
       const updateBodyMember: MemberToDisplay = this.form.controls.member.value;
@@ -123,7 +101,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       const updateResponseMemberSub = this.responsibleMembersService.updateById(this.selectedMember.id, updateBodyMember)
         .subscribe(() => {
           memberOk = true;
-          if (taskOk && deliveryOk && addResourceOk && removeResourceOk) {
+          if (taskOk && addResourceOk && removeResourceOk) {
             this.navigateToTaskPage();
           }
         }, error => console.error(error));
@@ -137,7 +115,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.resourcesToAdd.forEach((resourceToAdd, index) => {
         const addResSubsc = this.resourceService.add(resourceToAdd)
           .subscribe(() => {
-              if (index === this.resourcesToAdd.length - 1 && taskOk && deliveryOk && memberOk && removeResourceOk) {
+              if (index === this.resourcesToAdd.length - 1 && taskOk && memberOk && removeResourceOk) {
                 addResourceOk = true;
                 this.navigateToTaskPage();
               }
@@ -154,7 +132,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.resourceIdsToRemove.forEach((id, index) => {
         const removeSubsc = this.resourceService.removeById(id)
           .subscribe(() => {
-            if (index === this.resourceIdsToRemove.length - 1 && taskOk && deliveryOk && memberOk && addResourceOk) {
+            if (index === this.resourceIdsToRemove.length - 1 && taskOk && memberOk && addResourceOk) {
               removeResourceOk = true;
               this.navigateToTaskPage();
             }
@@ -166,7 +144,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     } else {
       removeResourceOk = true;
     }
-
 
     this.subscriptions.push(updateTaskSub);
   }
@@ -189,15 +166,14 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       : c1 === c2;
   }
 
-  compareDelivery(c1: DeliveryToDisplay, c2: DeliveryToDisplay): boolean {
-    return c1 && c2 ? c1.name === c2.name : false;
+  compareDelivery(c1: string, c2: string): boolean {
+    return c1 && c2 ? c1 === c2 : false;
   }
 
   private initForm() {
     this.form = this.fb.group({
       // name: ['', Validators.required],
       // member: ['', Validators.required],
-      // delivery: ['', Validators.required]
       name: ['', Validators.required],
       member: [],
       delivery: []
@@ -206,10 +182,11 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
   private setFormValues() {
 
-    this.taskService.getById(this.sprintId)
+    const getTaskByIdSubscr = this.taskService.getById(this.sprintId)
       .subscribe(value => {
         this.sprintFound.emit(true);
         this.form.controls.name.patchValue(value.name);
+        this.form.controls.delivery.patchValue(value.delivery);
         this.task = value;
       }, () => this.sprintFound.emit(false));
 
@@ -219,12 +196,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
         this.form.controls.member.patchValue(value[0]);
       });
 
-    const selectedDeliverySubscribe = this.deliveryService.getAllByParams('^' + this.sprintId + '$', 'taskId')
-      .subscribe(value => {
-        this.delivery = value[0];
-        this.form.controls.delivery.patchValue(value[0]);
-      });
-
-    this.subscriptions.push(selectedMemberSubscr, selectedDeliverySubscribe)
+    this.subscriptions.push(selectedMemberSubscr, getTaskByIdSubscr)
   }
 }

@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MemberToAdd} from '../../../../../models/member/member-to-add';
 import {MemberToDisplay} from '../../../../../models/member/member-to-display';
 import {TaskService} from '../../../../../serivce/task.service';
-import {DeliveryService} from '../../../../../serivce/delivery.service';
 import {ResourceService} from '../../../../../serivce/resource.service';
 import {MemberService} from '../../../../../serivce/member.service';
 import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
@@ -11,7 +10,6 @@ import {TaskToAdd} from '../../../../../models/task/task-to-add';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ResourceToAdd} from '../../../../../models/resource/resource-to-add';
 import {Observable, Subscription} from 'rxjs';
-import {DeliveryToDisplay} from "../../../../../models/delivery/delivery-to-display";
 
 
 @Component({
@@ -27,10 +25,7 @@ export class AddTaskComponent implements OnInit, OnDestroy {
 
   membersList: Observable<MemberToDisplay[]>;
   subscriptions: Subscription[] = [];
-  deliveries: DeliveryToDisplay[] = [
-    {name: 'Документ', taskId: undefined, id: 1},
-    {name: 'Презентация', taskId: undefined, id: 2}
-  ];
+  deliveries: string[] = ['Document', 'Presentation', "Nothing"];
 
   active = false;
   finished = false;
@@ -38,7 +33,6 @@ export class AddTaskComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
               private taskService: TaskService,
-              private deliveryService: DeliveryService,
               private resourceService: ResourceService,
               public memberService: MemberService,
               private responsibleMembersService: ResponsibleMembersService,
@@ -57,6 +51,7 @@ export class AddTaskComponent implements OnInit, OnDestroy {
     const taskToAdd: TaskToAdd = new TaskToAdd();
     taskToAdd.name = this.form.controls.name.value;
     taskToAdd.mileStoneId = +this.route.snapshot.paramMap.get('taskId');
+    taskToAdd.delivery = this.form.controls.delivery.value;
 
     taskToAdd.active = this.active;
     taskToAdd.finished = this.finished;
@@ -65,7 +60,6 @@ export class AddTaskComponent implements OnInit, OnDestroy {
       {
         task: taskToAdd,
         member: this.getAddMember(),
-        delivery: this.form.controls.delivery.value,
         resources: this.resources ? this.resources : []
       }).subscribe(() => this.navigateToTaskPage(), error => console.error(error));
 

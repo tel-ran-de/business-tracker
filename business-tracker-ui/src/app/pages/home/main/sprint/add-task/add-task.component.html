@@ -1,8 +1,8 @@
 <div class="mt-3" *ngIf="membersList">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="add-sprint-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="add-task-form">
     <div class="mb-3">
-      <label for="add-sprint-input-name" class="form-label">Sprint name*</label>
-      <input type="text" id="add-sprint-input-name" class="form-control" placeholder="Sprint name"
+      <label for="add-task-input-name" class="form-label">Task name*</label>
+      <input type="text" id="add-task-input-name" class="form-control" placeholder="task name"
              formControlName="name"
              [ngClass]="{'is-invalid' : form.controls.name.invalid && form.controls.name.touched}">
       <!--error block -->
@@ -15,20 +15,20 @@
     <div class="row">
       <div class="col-6">
         <div class="mb-3">
-          <label for="add-sprint-input-deadline" class="form-label">Deadline</label>
-          <input type="date" id="add-sprint-input-deadline" class="form-control" disabled>
+          <label for="add-task-input-deadline" class="form-label">Deadline</label>
+          <input type="date" id="add-task-input-deadline" class="form-control" disabled>
         </div>
       </div>
       <div class="col-6">
         <div class="mb-3">
           <div class="mb-2">Status</div>
-          <div class="btn-group d-flex" id="add-sprint-status-btn-groups">
-            <button class="btn w-100" type="button" id="add-sprint-status-await"
+          <div class="btn-group d-flex" id="add-task-status-btn-groups">
+            <button class="btn w-100" type="button" id="add-task-status-await"
                     [class]="!finished && !active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="active = false; finished = false">
               await
             </button>
-            <button class="btn w-100" type="button" id="add-sprint-status-active"
+            <button class="btn w-100" type="button" id="add-task-status-active"
                     [class]="!finished && active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="active = true; finished = false">
               in process
@@ -38,24 +38,24 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="add-sprint-select-member" class="form-label">Responsible for the result*</label>
-      <select id="add-sprint-select-member" class="form-select" formControlName="member">
+      <label for="add-task-select-member" class="form-label">Responsible for the result*</label>
+      <select id="add-task-select-member" class="form-select" formControlName="member">
         <option value="" disabled selected>Choose responsibly member</option>
         <option *ngFor="let member of membersList | async" [ngValue]="member">
           {{member.name}} {{member.lastName}} {{member.position}}</option>
       </select>
     </div>
     <div class="mb-3">
-      <label for="add-sprint-select-delivery" class="form-label">Deliveries</label>
-      <select id="add-sprint-select-delivery" class="form-select" formControlName="delivery">
+      <label for="add-task-select-delivery" class="form-label">Deliveries</label>
+      <select id="add-task-select-delivery" class="form-select" formControlName="delivery">
         <option value="" disabled selected>Choose delivery</option>
-        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery.name}}</option>
+        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery}}</option>
       </select>
     </div>
     <div>
-      <button type="submit" class="btn btn-primary me-5" [disabled]="form.invalid" id="add-form-sprint-sbmt">Submit
+      <button type="submit" class="btn btn-primary me-5" [disabled]="form.invalid" id="add-form-task-sbmt">Submit
       </button>
-      <button type="reset" class="btn btn-primary" (click)="navigateToTaskPage()" id="add-form-sprint-cancel">Cancel
+      <button type="reset" class="btn btn-primary" (click)="navigateToTaskPage()" id="add-form-task-cancel">Cancel
       </button>
     </div>
   </form>

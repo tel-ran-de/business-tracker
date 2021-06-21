@@ -1,8 +1,8 @@
 <div class="mt-3" *ngIf="task">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="edit-sprint-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="edit-task-form">
     <div class="mb-3">
-      <label for="edit-sprint-input-name" class="form-label">Sprint name*</label>
-      <input type="text" id="edit-sprint-input-name" class="form-control" placeholder="Sprint name"
+      <label for="edit-task-input-name" class="form-label">Task name*</label>
+      <input type="text" id="edit-task-input-name" class="form-control" placeholder="Task name"
              formControlName="name"
              [ngClass]="{'is-invalid' : form.controls.name.invalid && form.controls.name.touched}">
       <!--error block -->
@@ -15,25 +15,25 @@
     <div class="row">
       <div class="col-6">
         <div class="mb-3">
-          <label for="edit-sprint-input-deadline" class="form-label">Deadline</label>
-          <input type="date" id="edit-sprint-input-deadline" class="form-control">
+          <label for="edit-task-input-deadline" class="form-label">Deadline</label>
+          <input type="date" id="edit-task-input-deadline" class="form-control">
         </div>
       </div>
       <div class="col-6">
         <div class="mb-3">
           <div class="mb-2">Status</div>
-          <div class="btn-group d-flex" id="edit-sprint-status-btn-groups">
-            <button class="btn w-100" type="button" id="edit-sprint-status-await"
+          <div class="btn-group d-flex" id="edit-task-status-btn-groups">
+            <button class="btn w-100" type="button" id="edit-task-status-await"
                     [class]="!task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="task.active = false; task.finished = false">
               await
             </button>
-            <button class="btn w-100" type="button" id="edit-sprint-status-active"
+            <button class="btn w-100" type="button" id="edit-task-status-active"
                     [class]="!task.finished && task.active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="task.active = true; task.finished = false">
               in process
             </button>
-            <button class="btn w-100" type="button" id="edit-sprint-status-done"
+            <button class="btn w-100" type="button" id="edit-task-status-done"
                     [class]="task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="task.finished = true; task.active = false">
               done
@@ -43,23 +43,23 @@
       </div>
     </div>
     <div class="mb-3" *ngIf="selectedMember">
-      <label for="edit-sprint-select-member" class="form-label">Responsible for the result*</label>
-      <select id="edit-sprint-select-member" class="form-select" formControlName="member"
+      <label for="edit-task-select-member" class="form-label">Responsible for the result*</label>
+      <select id="edit-task-select-member" class="form-select" formControlName="member"
               [compareWith]="compareMembers">
         <option *ngFor="let member of members | async" [ngValue]="member">{{member.name}} {{member.lastName}}</option>
       </select>
     </div>
-    <div class="mb-3" *ngIf="delivery">
-      <label for="edit-sprint-select-delivery" class="form-label">Deliveries*</label>
-      <select id="edit-sprint-select-delivery" class="form-select" formControlName="delivery"
+    <div class="mb-3">
+      <label for="edit-task-select-delivery" class="form-label">Delivery*</label>
+      <select id="edit-task-select-delivery" class="form-select" formControlName="delivery"
               [compareWith]="compareDelivery">
-        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery.name}}</option>
+        <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery}}</option>
       </select>
     </div>
-    <div>
-      <button type="submit" class="btn btn-primary me-5" id="edit-form-sprint-sbmt" [disabled]="form.invalid">Submit
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn btn-primary me-3" id="edit-form-task-sbmt" [disabled]="form.invalid">Submit
       </button>
-      <button type="reset" class="btn btn-primary" id="edit-form-sprint-cancel" (click)="navigateToTaskPage()">Cancel
+      <button type="reset" class="btn btn-primary" id="edit-form-task-cancel" (click)="navigateToTaskPage()">Cancel
       </button>
     </div>
   </form>

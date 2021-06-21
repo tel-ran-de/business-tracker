@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ResourceService} from '../../../../../serivce/resource.service';
 import {MemberService} from '../../../../../serivce/member.service';
-import {DeliveryService} from '../../../../../serivce/delivery.service';
 import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -23,7 +22,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private memberService: MemberService,
               private mileStoneService: MileStoneService,
               private responsibleMembersService: ResponsibleMembersService,
-              private deliveryService: DeliveryService,
               private route: ActivatedRoute) {
   }
 

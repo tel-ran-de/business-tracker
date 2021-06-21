@@ -1,6 +1,5 @@
 import {Member} from './member';
 import {Resource} from './resource';
-import {Delivery} from './delivery';
 
 export class Task {
   id: number;
@@ -9,9 +8,8 @@ export class Task {
   name: string;
   active: boolean;
   finished: boolean;
+  delivery: string;
 
   responsibleMembers: Member[];
   resources: Resource[];
-  delivers: Delivery[];
-
 }

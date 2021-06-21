@@ -2,7 +2,6 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TaskToDisplay} from '../../../../../models/task/task-to-display';
 import {TaskService} from '../../../../../serivce/task.service';
 import {Subscription} from 'rxjs';
-import {DeliveryService} from '../../../../../serivce/delivery.service';
 import {ResourceService} from '../../../../../serivce/resource.service';
 import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +21,6 @@ export class TaskElementComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(private taskService: TaskService,
-              private deliveryService: DeliveryService,
               private resourceService: ResourceService,
               private responsibleMembersService: ResponsibleMembersService,
               private modal: NgbModal) {

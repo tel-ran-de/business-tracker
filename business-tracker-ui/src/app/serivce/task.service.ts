@@ -4,7 +4,6 @@ import {HttpOperation} from './http-operation';
 import {TaskToDisplay} from '../models/task/task-to-display';
 import {TaskToAdd} from '../models/task/task-to-add';
 import {MemberToAdd} from "../models/member/member-to-add";
-import {DeliveryToAdd} from "../models/delivery/delivery-to-add";
 import {ResourceToAdd} from "../models/resource/resource-to-add";
 import {Observable} from "rxjs";
 
@@ -17,7 +16,7 @@ export class TaskService extends HttpOperation<TaskToDisplay, TaskToAdd> {
     super('api/task', 'api/task', 'api/task', 'api/task', http);
   }
 
-  addAll(arr: { task: TaskToDisplay, member: MemberToAdd, delivery: DeliveryToAdd, resources: ResourceToAdd[] }): Observable<any> {
+  addAll(arr: { task: TaskToDisplay, member: MemberToAdd, resources: ResourceToAdd[] }): Observable<any> {
     return this.http.post<TaskToDisplay>('api/task', arr, {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     });
