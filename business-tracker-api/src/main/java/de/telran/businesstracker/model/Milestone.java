@@ -1,21 +1,17 @@
 package de.telran.businesstracker.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
-@Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Milestone {
@@ -25,12 +21,30 @@ public class Milestone {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Setter
     private String name;
 
+    @Setter
     private LocalDate startDate;
 
+    @Setter
     private LocalDate finishDate;
 
     @ManyToOne
     private Roadmap roadmap;
+
+    @ElementCollection
+    private List<String> kpis = new ArrayList<>();
+
+    public Milestone(String name, LocalDate startDate, LocalDate finishDate, Roadmap roadmap, List<String> kpis) {
+        this.name = name;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.roadmap = roadmap;
+        this.kpis = kpis;
+    }
+
+    public void addKpi(String kpi) {
+        this.kpis.add(kpi);
+    }
 }

@@ -14,11 +14,11 @@ import java.util.List;
 @Service
 public class MilestoneService {
 
-    static final String ROADMAP_DOES_NOT_EXIST = "Error! This roadmap doesn't exist in our DB";
-    static final String MEMBER_DOES_NOT_EXIST = "Error! This milestone doesn't exist in our DB";
+    private final String ROADMAP_DOES_NOT_EXIST = "Error! This roadmap doesn't exist in our DB";
+    private final String MILE_STONE_DOES_NOT_EXIST = "Error! This milestone doesn't exist in our DB";
 
-    MilestoneRepository milestoneRepository;
-    RoadmapRepository roadmapRepository;
+    private final MilestoneRepository milestoneRepository;
+    private final RoadmapRepository roadmapRepository;
 
     public MilestoneService(MilestoneRepository milestoneRepository, RoadmapRepository roadmapRepository) {
         this.milestoneRepository = milestoneRepository;
@@ -27,9 +27,8 @@ public class MilestoneService {
 
     public Milestone add(String name, LocalDate startDate, LocalDate finishDate, Long roadmapId) {
         Roadmap roadmap = roadmapRepository.findById(roadmapId).orElseThrow(() -> new EntityNotFoundException(ROADMAP_DOES_NOT_EXIST));
-        Milestone milestone = Milestone.builder().name(name)
-                .startDate(startDate).finishDate(finishDate)
-                .roadmap(roadmap).build();
+        Milestone milestone = new Milestone(name, startDate, finishDate, roadmap, new ArrayList<>());
+
         milestoneRepository.save(milestone);
         return milestone;
     }
@@ -47,13 +46,10 @@ public class MilestoneService {
     }
 
     public Milestone getById(Long id) {
-        return milestoneRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
+        return milestoneRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MILE_STONE_DOES_NOT_EXIST));
     }
 
     public void removeById(Long id) {
         milestoneRepository.deleteById(id);
     }
 }
-
-
-

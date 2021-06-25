@@ -48,14 +48,7 @@ class MilestoneServiceTest {
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
-
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         milestoneService.add(milestone.getName(), milestone.getStartDate()
                 , milestone.getFinishDate(), milestone.getRoadmap().getId());
@@ -75,13 +68,7 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
                 milestoneService.add(milestone.getName(), milestone.getStartDate()
@@ -98,13 +85,7 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         String newName = "New milestone";
         LocalDate newStartDay = LocalDate.now().plusDays(1);
@@ -128,21 +109,8 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone1 = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
-
-        Milestone milestone2 = Milestone.builder()
-                .id(2L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone1 = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
+        Milestone milestone2 = new Milestone(2L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         List<Milestone> milestones = new ArrayList<>();
 
@@ -168,13 +136,7 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
         Milestone expectedMilestone = milestoneService.getById(milestone.getId());
@@ -194,20 +156,13 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> milestoneService.getById(milestone.getId() + 1));
 
         verify(milestoneRepository, times(1)).findById(any());
         assertEquals("Error! This milestone doesn't exist in our DB", exception.getMessage());
-
     }
 
     @Captor
@@ -221,13 +176,7 @@ class MilestoneServiceTest {
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         milestoneService.add(milestone.getName(), milestone.getStartDate()
                 , milestone.getFinishDate(), milestone.getRoadmap().getId());
