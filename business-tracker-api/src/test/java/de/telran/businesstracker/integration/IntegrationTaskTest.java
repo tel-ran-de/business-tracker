@@ -1,4 +1,4 @@
-package de.telran.businesstracker.integration;
+package de.telran.businesstracker.controller;
 
 import de.telran.businesstracker.model.*;
 import de.telran.businesstracker.repositories.*;
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-class IntegrationTaskTest {
+class TaskControllerTest {
 
     @Autowired
     UserRepository userRepository;
@@ -30,33 +30,29 @@ class IntegrationTaskTest {
     public void integrationTestTask() {
         User user = new User();
         userRepository.save(user);
-
         Project project = Project.builder().build();
-        projectRepository.save(project);
-
         Roadmap roadmap = Roadmap.builder().build();
+        projectRepository.save(project);
         roadmapRepository.save(roadmap);
-
+        // Member member = new Member(1L, "Boss", project, user);
         Member member = Member.builder().build();
         memberRepository.save(member);
-
-        Milestone milestone = new Milestone();
+        Milestone milestone = Milestone.builder().build();
+        // Milestone milestone = new Milestone(2L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(3), roadmap);
         milestoneRepository.save(milestone);
-
-
-        Task task = taskService.add("Task1", false, milestone.getId(), member.getId());
+        Task task = taskService.add("Task1", false, false, "Documnet", milestone.getId(), member.getId());
 
         Assertions.assertEquals("Task1", task.getName());
-        Assertions.assertEquals(false, task.getFinished());
+        Assertions.assertEquals(false, task.isFinished());
         Assertions.assertEquals(milestone.getId(), task.getMilestone().getId());
         Assertions.assertEquals(member.getId(), task.getResponsibleMember().getId());
 
-        taskService.edit(task.getId(), "Task2", true);
+        taskService.edit(task.getId(), "Task2", true, false, "Document");
         Task editedTask = taskService.getById(task.getId());
         Assertions.assertEquals("Task2", editedTask.getName());
-        Assertions.assertEquals(true, editedTask.getFinished());
+        Assertions.assertEquals(true, editedTask.isFinished());
 
-        Task task1 = taskService.add("Task1", false, milestone.getId(), member.getId());
+        Task task1 = taskService.add("Task1", false, false, "Document", milestone.getId(), member.getId());
         Assertions.assertEquals("Task2", taskService.getById(task.getId()).getName());
 
         List<Task> expected = taskService.getAll();
@@ -68,5 +64,12 @@ class IntegrationTaskTest {
 
         List<Task> expected1 = taskService.getAll();
         Assertions.assertEquals(expected1.size(), 0);
+
+        milestoneRepository.delete(milestone);
+        memberRepository.delete(member);
+        roadmapRepository.delete(roadmap);
+        projectRepository.delete(project);
+        userRepository.delete(user);
+
     }
 }

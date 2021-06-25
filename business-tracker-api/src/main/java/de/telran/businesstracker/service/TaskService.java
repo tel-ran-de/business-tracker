@@ -5,11 +5,11 @@ import de.telran.businesstracker.model.Milestone;
 import de.telran.businesstracker.model.Task;
 import de.telran.businesstracker.repositories.MemberRepository;
 import de.telran.businesstracker.repositories.MilestoneRepository;
-import de.telran.businesstracker.repositories.ResourceRepository;
 import de.telran.businesstracker.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,57 +23,43 @@ public class TaskService {
     TaskRepository taskRepository;
     MemberRepository memberRepository;
     MilestoneRepository milestoneRepository;
-    ResourceRepository resourceRepository;
 
-    public TaskService(TaskRepository taskRepository, MemberRepository memberRepository, MilestoneRepository milestoneRepository, ResourceRepository resourceRepository) {
+    public TaskService(TaskRepository taskRepository, MemberRepository memberRepository, MilestoneRepository milestoneRepository) {
         this.taskRepository = taskRepository;
         this.memberRepository = memberRepository;
         this.milestoneRepository = milestoneRepository;
-        this.resourceRepository = resourceRepository;
     }
 
-    public Task add(String name, boolean finished, Long milestoneId, Long memberId) {
+    public Task add(String name, boolean finished, boolean active, String delivery, Long milestoneId, Long memberId) {
+        Member responsibleMember = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
+        Milestone milestone = milestoneRepository.findById(milestoneId).orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(MEMBER_DOES_NOT_EXIST));
-        Milestone milestone = milestoneRepository.findById(milestoneId)
-                .orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
-        Task task = Task.builder()
-                .name(name)
-                .milestone(milestone)
-                .finished(finished)
-                .responsibleMember(member)
-                .build();
-        taskRepository.save(task);
+        Task task = new Task(name, finished, active, delivery, milestone, responsibleMember);
 
-        return task;
+        return taskRepository.save(task);
     }
 
-    public void edit(Long id, String name, boolean finished) {
+    public void edit(Long id, String name, boolean finished, boolean active, String delivery) {
         Task task = getById(id);
+
         task.setName(name);
         task.setFinished(finished);
+        task.setActive(active);
+        task.setDelivery(delivery);
+
         taskRepository.save(task);
+    }
+
+    public List<Task> getAll() {
+        return new ArrayList<>(taskRepository.findAll());
     }
 
     public Task getById(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(TASK_DOES_NOT_EXIST));
+        return taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TASK_DOES_NOT_EXIST));
     }
 
     public void removeById(Long id) {
         taskRepository.deleteById(id);
-    }
-
-    public List<Task> getAllTasksByMileStoneId(long milestoneId) {
-        Milestone milestone = milestoneRepository.findById(milestoneId)
-                .orElseThrow(() -> new EntityNotFoundException(MILESTONE_DOES_NOT_EXIST));
-
-        return taskRepository.findAllByMilestone(milestone);
-    }
-
-    public List<Task> getByActiveParam(boolean isActive) {
-        return taskRepository.findAllByActive(isActive);
     }
 }
 

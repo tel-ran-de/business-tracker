@@ -10,8 +10,12 @@ public class TaskMapper {
     public TaskDto toDto(Task task) {
         return TaskDto.builder()
                 .id(task.getId())
+
                 .name(task.getName())
                 .finished(task.isFinished())
+                .acitve(task.isActive())
+                .delivery(task.getDelivery())
+
                 .milestoneId(task.getMilestone().getId())
                 .memberId(task.getResponsibleMember().getId())
                 .build();

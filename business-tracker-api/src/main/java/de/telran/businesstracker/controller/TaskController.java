@@ -1,11 +1,8 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.controller.dto.ResourceDto;
 import de.telran.businesstracker.controller.dto.TaskDto;
-import de.telran.businesstracker.controller.dto.TaskToAddDto;
 import de.telran.businesstracker.mapper.TaskMapper;
 import de.telran.businesstracker.model.Task;
-import de.telran.businesstracker.service.ResourceService;
 import de.telran.businesstracker.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,37 +20,31 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     private final TaskService taskService;
-    private final ResourceService resourceService;
     private final TaskMapper taskMapper;
 
-    public TaskController(TaskService taskService, ResourceService resourceService, TaskMapper taskMapper) {
+    public TaskController(TaskService taskService, TaskMapper taskMapper) {
         this.taskService = taskService;
-        this.resourceService = resourceService;
         this.taskMapper = taskMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskToAddDto taskDto) throws URISyntaxException {
-        Task task = taskService.add(taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
-
-        for (ResourceDto resource : taskDto.resources) {
-            resourceService.add(resource.name, resource.hours, resource.cost, task.getId());
-        }
-
+    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
+        Task task = taskService.add(taskDto.name, taskDto.finished, taskDto.acitve, taskDto.delivery, taskDto.milestoneId, taskDto.memberId);
+        TaskDto dto = taskMapper.toDto(task);
         return ResponseEntity
                 .created(new URI("/api/tasks/" + task.getId()))
-                .body(taskMapper.toDto(task));
+                .body(dto);
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateTask(@RequestBody @Valid TaskDto taskDto) throws HttpClientErrorException.BadRequest {
-        taskService.edit(taskDto.id, taskDto.name, taskDto.finished);
+        taskService.edit(taskDto.id, taskDto.name, taskDto.finished, taskDto.acitve, taskDto.delivery);
     }
 
-    @GetMapping("milestone/{id}")
-    public List<TaskDto> getAllTasksByMileStoneId(@PathVariable Long id) {
-        return taskService.getAllTasksByMileStoneId(id)
+    @GetMapping("")
+    public List<TaskDto> getAllTasks() {
+        return taskService.getAll()
                 .stream()
                 .map(taskMapper::toDto)
                 .collect(Collectors.toList());
@@ -63,14 +54,6 @@ public class TaskController {
     public TaskDto getTask(@PathVariable Long id) {
         Task task = taskService.getById(id);
         return taskMapper.toDto(task);
-    }
-
-    @GetMapping("/active")
-    public List<TaskDto> getTasksBy() {
-        return taskService.getByActiveParam(true)
-                .stream()
-                .map(taskMapper::toDto)
-                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")

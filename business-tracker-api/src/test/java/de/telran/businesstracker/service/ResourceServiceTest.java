@@ -23,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ResourceServiceTest {
@@ -43,7 +41,7 @@ class ResourceServiceTest {
     public void testAdd_success() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
 
@@ -72,7 +70,7 @@ class ResourceServiceTest {
     public void testAdd_taskDoesNotExist_EntityNotFoundException() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         Resource resource = Resource.builder()
                 .id(1L)
@@ -94,7 +92,7 @@ class ResourceServiceTest {
     public void resourceEdit_resourceExist_fieldsChanged() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         Resource resource = Resource.builder()
                 .id(1L)
@@ -124,7 +122,7 @@ class ResourceServiceTest {
     void getAll_twoObjects() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         Resource resource1 = Resource.builder()
                 .id(1L)
@@ -164,7 +162,7 @@ class ResourceServiceTest {
     void testGetById_objectExist() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         Resource resource = Resource.builder()
                 .id(1L)
@@ -190,7 +188,7 @@ class ResourceServiceTest {
     void testGetById_objectNotExist() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         Resource resource = Resource.builder()
                 .id(1L)
@@ -215,7 +213,7 @@ class ResourceServiceTest {
     void removeById_oneObjectDeleted() {
         Member member = new Member();
         Milestone milestone = new Milestone();
-        Task task = new Task(2L, "Task", false, milestone, member);
+        Task task = new Task(2L, "Task", false, false, "Document", milestone, member);
 
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
 

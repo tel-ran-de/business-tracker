@@ -13,9 +13,12 @@ public class TaskDto {
 
     public String name;
 
-    public Boolean finished;
+    public boolean finished;
+    public boolean acitve;
 
     public Long milestoneId;
 
     public Long memberId;
+
+    public String delivery;
 }
