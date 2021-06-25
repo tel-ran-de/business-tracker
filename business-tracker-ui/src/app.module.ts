@@ -25,9 +25,6 @@ import {PageNotFoundComponent} from './app/pages/page-not-found/page-not-found.c
 import {MileStoneElementComponent} from "./app/pages/home/main/mile-stone/ms-element/mile-stone-element.component";
 import {KpiItemsComponent} from "./app/pages/home/main/mile-stone/kpi-items/kpi-items.component";
 import {AddKpiComponent} from "./app/pages/home/main/mile-stone/kpi-items/add-kpi/add-kpi.component";
-import {HttpClientInMemoryWebApiModule} from "angular-in-memory-web-api";
-import {InMemoryDataService} from "./app/serivce/fake-backend/in-memory-data.service";
-
 
 @NgModule({
   declarations: [
@@ -60,10 +57,7 @@ import {InMemoryDataService} from "./app/serivce/fake-backend/in-memory-data.ser
     NgbPaginationModule,
     NgbAlertModule,
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, {dataEncapsulation: false}
-    )
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

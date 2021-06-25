@@ -37,13 +37,13 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const getAllRoadMapsSubscription = this.roadMapService.getAll().subscribe(value => this.roadMaps = value);
-    const getAllKpisSubscription = this.kpiService.getAll().subscribe(value => this.kpis = value);
+    const getAllKpisByProjectSubscription = this.kpiService.getKpisByProjectId(1).subscribe(value => this.kpis = value);
     const getAllMileStonesSubscription = this.mileStoneService.getAll().subscribe(value => this.mileStones = value);
 
     const getAllActiveTasksSubscription = this.taskService.getAllByParams('true', 'active').subscribe(value => this.activeTasks = value);
     const getAllMembersSubscription = this.memberService.getAll().subscribe(value => this.members = value);
 
-    this.subscriptions.push(getAllKpisSubscription,
+    this.subscriptions.push(getAllKpisByProjectSubscription,
       getAllRoadMapsSubscription,
       getAllMileStonesSubscription,
       getAllActiveTasksSubscription,

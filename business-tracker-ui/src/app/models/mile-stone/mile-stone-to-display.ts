@@ -3,6 +3,7 @@ export class MileStoneToDisplay {
   roadMapId: number;
 
   name: string;
+  kpi: string;
   startDate: Date;
   finishDate: Date;
 }

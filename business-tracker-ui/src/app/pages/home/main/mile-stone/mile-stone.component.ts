@@ -17,7 +17,6 @@ import {Subscription} from 'rxjs';
 export class MileStoneComponent implements OnInit, OnDestroy {
 
   roadMapId: string;
-  taskId: string;
 
   resources: ResourceToDisplay[];
   kpis: KpiToDisplay[];
@@ -34,7 +33,6 @@ export class MileStoneComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.taskId = this.route.snapshot.paramMap.get('taskId');
     this.roadMapId = this.route.snapshot.paramMap.get('roadMapId');
     // const productId = +this.route.snapshot.paramMap.get('productId');
 
@@ -42,8 +40,10 @@ export class MileStoneComponent implements OnInit, OnDestroy {
       .subscribe(resourceArr => this.resources = resourceArr);
     this.mileStoneService.getAll()
       .subscribe(value => this.mileStones = value);
-    const getAllKpisSubscription = this.kpiService.getAll()
+    const getAllKpisByMileStoneIdSubscription = this.kpiService.getKpisByMileStoneId(+this.roadMapId)
       .subscribe(value => this.kpis = value);
+    // const getAllKpisByMileStoneIdSubscription = this.kpiService.getKpisByRoadMapId(+this.roadMapId)
+    //   .subscribe(value => console.log(value));
     const kpiAddSubscription = this.kpiService.kpiAdded$
       .subscribe(value => this.kpis.push(value));
     const kpiDeleteSubscription = this.kpiService.kpiDeleted$
@@ -64,7 +64,7 @@ export class MileStoneComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.push(
-      getAllKpisSubscription,
+      getAllKpisByMileStoneIdSubscription,
       kpiAddSubscription,
       kpiDeleteSubscription,
       getAllResourcesSubscription,

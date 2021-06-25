@@ -27,34 +27,32 @@ export class TaskElementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const mileStoneId = String(this.mileStoneId);
-
-    const getAllSprintsByIdSubscription = this.taskService.getAllByParams(mileStoneId, 'mileStoneId')
+    const getAllTasksByMileStoneIdSubscription = this.taskService.getAllTasksByMileStoneId(this.mileStoneId)
       .subscribe(value => this.tasks = value, error => console.log(error));
-    this.subscriptions.push(getAllSprintsByIdSubscription);
+
+    this.subscriptions.push(getAllTasksByMileStoneIdSubscription);
   }
 
-  onClickRemoveSprint(sprint: TaskToDisplay): void {
+  onClickRemoveSprint(task: TaskToDisplay): void {
 
     const removeConfirmModal = this.modal.open(DeleteConfirmationModalComponent);
     removeConfirmModal.result.then(value => {
         if (value === 'ok') {
-          const removeSprintByIdSub = this.taskService.removeById(sprint.id)
+          const removeTaskByIdSub = this.taskService.removeById(task.id)
             .subscribe(() => {
 
               const getAllResourceSub = this.resourceService.getAll()
                 .subscribe(resources => {
                   this.resourceService.reloadAddedResourceList$.next(resources);
 
-                  const index = this.tasks.indexOf(sprint);
+                  const index = this.tasks.indexOf(task);
                   this.tasks.splice(index, 1);
                 });
               this.subscriptions.push(getAllResourceSub);
 
             }, error => console.log(error));
 
-          this.subscriptions.push(removeSprintByIdSub);
-
+          this.subscriptions.push(removeTaskByIdSub);
         }
       }
     );

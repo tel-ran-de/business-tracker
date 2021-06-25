@@ -17,10 +17,10 @@ import {ResourceToDisplay} from "../../../../../models/resource/resource-to-disp
 })
 export class EditTaskComponent implements OnInit, OnDestroy {
 
-  form: FormGroup;
+  private form: FormGroup;
+  private mileStoneId: string;
   private taskId: string;
-  private sprintId: string;
-  subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
 
   selectedMember: MemberToDisplay;
   task: TaskToDisplay;
@@ -45,14 +45,14 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.taskId = this.route.snapshot.paramMap.get('taskId');
-    this.sprintId = this.route.snapshot.paramMap.get("sprintId");
+    this.mileStoneId = this.route.snapshot.paramMap.get('taskId');
+    this.taskId = this.route.snapshot.paramMap.get("sprintId");
     this.members = this.memberService.getAll();
 
     this.initForm();
     this.setFormValues();
 
-    const resourcesGetAllSub = this.resourceService.getAllByParams(this.sprintId, 'taskId')
+    const resourcesGetAllSub = this.resourceService.getAllByParams(this.taskId, 'taskId')
       .subscribe(value => {
         this.resources.push(...value);
         this.resourceService.reloadAddedResourceList$.next(this.resources);
@@ -60,7 +60,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
     const transferSubscribe = this.resourceService.addResourceTransfer$
       .subscribe(resourceToAdd => {
-        resourceToAdd.sprintId = +this.taskId;
+        resourceToAdd.taskId = +this.mileStoneId;
 
         this.resources.push(resourceToAdd);
         this.resourcesToAdd.push(resourceToAdd);
@@ -80,7 +80,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   onSubmit(): void {
 
     let taskOk = false;
-    let memberOk = false;
     let addResourceOk = false;
     let removeResourceOk = false;
     //Task
@@ -88,34 +87,17 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     const updateTaskSub = this.taskService.updateById(this.task.id, this.task)
       .subscribe(() => {
         taskOk = true;
-        if (memberOk && addResourceOk && removeResourceOk) {
+        if (addResourceOk && removeResourceOk) {
           this.navigateToTaskPage();
         }
       }, error => console.error(error));
-
-    //Responsible member
-    if (this.form.controls.member.value) {
-      const updateBodyMember: MemberToDisplay = this.form.controls.member.value;
-      updateBodyMember.id = this.selectedMember.id;
-      updateBodyMember.taskId = this.selectedMember.taskId;
-      const updateResponseMemberSub = this.responsibleMembersService.updateById(this.selectedMember.id, updateBodyMember)
-        .subscribe(() => {
-          memberOk = true;
-          if (taskOk && addResourceOk && removeResourceOk) {
-            this.navigateToTaskPage();
-          }
-        }, error => console.error(error));
-      this.subscriptions.push(updateResponseMemberSub);
-    } else {
-      memberOk = true;
-    }
 
     //resources add
     if (this.resourcesToAdd.length > 0) {
       this.resourcesToAdd.forEach((resourceToAdd, index) => {
         const addResSubsc = this.resourceService.add(resourceToAdd)
           .subscribe(() => {
-              if (index === this.resourcesToAdd.length - 1 && taskOk && memberOk && removeResourceOk) {
+              if (index === this.resourcesToAdd.length - 1 && taskOk && removeResourceOk) {
                 addResourceOk = true;
                 this.navigateToTaskPage();
               }
@@ -132,7 +114,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.resourceIdsToRemove.forEach((id, index) => {
         const removeSubsc = this.resourceService.removeById(id)
           .subscribe(() => {
-            if (index === this.resourceIdsToRemove.length - 1 && taskOk && memberOk && addResourceOk) {
+            if (index === this.resourceIdsToRemove.length - 1 && taskOk && addResourceOk) {
               removeResourceOk = true;
               this.navigateToTaskPage();
             }
@@ -152,14 +134,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     this.router.navigate(['../../../..'], {relativeTo: this.route});
   }
 
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-    }
-  }
-
   compareMembers(c1: MemberToDisplay, c2: MemberToDisplay): boolean {
     return c1 && c2 ?
       c1.name === c2.name && c1.lastName === c2.lastName && c1.img === c2.img && c1.position === c2.position
@@ -172,8 +146,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
   private initForm() {
     this.form = this.fb.group({
-      // name: ['', Validators.required],
-      // member: ['', Validators.required],
       name: ['', Validators.required],
       member: [],
       delivery: []
@@ -182,20 +154,31 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
   private setFormValues() {
 
-    const getTaskByIdSubscr = this.taskService.getById(this.sprintId)
+    const getTaskByIdSubscr = this.taskService.getById(this.taskId)
       .subscribe(value => {
-        this.sprintFound.emit(true);
-        this.form.controls.name.patchValue(value.name);
-        this.form.controls.delivery.patchValue(value.delivery);
-        this.task = value;
-      }, () => this.sprintFound.emit(false));
+          this.sprintFound.emit(true);
+          this.form.controls.name.patchValue(value.name);
+          this.form.controls.delivery.patchValue(value.delivery);
+          this.task = value;
 
-    const selectedMemberSubscr = this.responsibleMembersService.getAllByParams(this.sprintId, 'taskId')
-      .subscribe(value => {
-        this.selectedMember = value[0];
-        this.form.controls.member.patchValue(value[0]);
-      });
+          const selectedMemberSubscr = this.responsibleMembersService.getById(String(this.task.memberId))
+            .subscribe(value => {
+              this.selectedMember = value;
+              this.form.controls.member.patchValue(value);
+            });
+          this.subscriptions.push(selectedMemberSubscr)
 
-    this.subscriptions.push(selectedMemberSubscr, getTaskByIdSubscr)
+        },
+        () => this.sprintFound.emit(false));
+
+    this.subscriptions.push(getTaskByIdSubscr)
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    }
   }
 }

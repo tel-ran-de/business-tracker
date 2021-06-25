@@ -1,20 +1,15 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.model.Task;
+import de.telran.businesstracker.controller.dto.ResourceDto;
 import de.telran.businesstracker.controller.dto.TaskDto;
+import de.telran.businesstracker.controller.dto.TaskToAddDto;
 import de.telran.businesstracker.mapper.TaskMapper;
+import de.telran.businesstracker.model.Task;
+import de.telran.businesstracker.service.ResourceService;
 import de.telran.businesstracker.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -28,20 +23,26 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     private final TaskService taskService;
+    private final ResourceService resourceService;
     private final TaskMapper taskMapper;
 
-    public TaskController(TaskService taskService, TaskMapper taskMapper) {
+    public TaskController(TaskService taskService, ResourceService resourceService, TaskMapper taskMapper) {
         this.taskService = taskService;
+        this.resourceService = resourceService;
         this.taskMapper = taskMapper;
     }
 
     @PostMapping("")
-    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskDto taskDto) throws URISyntaxException {
+    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskToAddDto taskDto) throws URISyntaxException {
         Task task = taskService.add(taskDto.name, taskDto.finished, taskDto.milestoneId, taskDto.memberId);
-        taskDto.id = task.getId();
+
+        for (ResourceDto resource : taskDto.resources) {
+            resourceService.add(resource.name, resource.hours, resource.cost, task.getId());
+        }
+
         return ResponseEntity
                 .created(new URI("/api/tasks/" + task.getId()))
-                .body(taskDto);
+                .body(taskMapper.toDto(task));
     }
 
     @PutMapping("")
@@ -50,9 +51,9 @@ public class TaskController {
         taskService.edit(taskDto.id, taskDto.name, taskDto.finished);
     }
 
-    @GetMapping("")
-    public List<TaskDto> getAllTasks() {
-        return taskService.getAll()
+    @GetMapping("milestone/{id}")
+    public List<TaskDto> getAllTasksByMileStoneId(@PathVariable Long id) {
+        return taskService.getAllTasksByMileStoneId(id)
                 .stream()
                 .map(taskMapper::toDto)
                 .collect(Collectors.toList());
@@ -62,6 +63,14 @@ public class TaskController {
     public TaskDto getTask(@PathVariable Long id) {
         Task task = taskService.getById(id);
         return taskMapper.toDto(task);
+    }
+
+    @GetMapping("/active")
+    public List<TaskDto> getTasksBy() {
+        return taskService.getByActiveParam(true)
+                .stream()
+                .map(taskMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")

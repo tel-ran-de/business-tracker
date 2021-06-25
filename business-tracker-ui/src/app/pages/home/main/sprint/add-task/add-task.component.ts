@@ -52,18 +52,19 @@ export class AddTaskComponent implements OnInit, OnDestroy {
     taskToAdd.name = this.form.controls.name.value;
     taskToAdd.mileStoneId = +this.route.snapshot.paramMap.get('taskId');
     taskToAdd.delivery = this.form.controls.delivery.value;
+    taskToAdd.memberId = this.getAddMember().id;
 
     taskToAdd.active = this.active;
     taskToAdd.finished = this.finished;
 
-    const addSprintSub = this.taskService.addAll(
+    const addTaskSub = this.taskService.addTask(
       {
         task: taskToAdd,
-        member: this.getAddMember(),
         resources: this.resources ? this.resources : []
-      }).subscribe(() => this.navigateToTaskPage(), error => console.error(error));
+      }).subscribe(() => this.navigateToTaskPage(),
+      error => console.error(error));
 
-    this.subscriptions.push(addSprintSub);
+    this.subscriptions.push(addTaskSub);
   }
 
   navigateToTaskPage(): void {
