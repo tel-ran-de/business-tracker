@@ -23,10 +23,8 @@ public class Milestone {
 
     @Setter
     private String name;
-
     @Setter
     private LocalDate startDate;
-
     @Setter
     private LocalDate finishDate;
 
