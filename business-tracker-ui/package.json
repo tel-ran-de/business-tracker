@@ -22,11 +22,8 @@
     "@angular/router": "~11.2.13",
     "@ng-bootstrap/ng-bootstrap": "^9.0.0",
     "@popperjs/core": "^2.9.2",
-    "@types/faker": "^5.5.4",
-    "angular-in-memory-web-api": "^0.11.0",
     "bootstrap": "^5.0.0-beta3",
     "bootstrap-icons": "^1.4.1",
-    "faker": "^5.5.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

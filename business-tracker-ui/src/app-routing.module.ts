@@ -8,16 +8,15 @@ import {TaskComponent} from './app/pages/home/main/sprint/task.component';
 import {TaskDetailsComponent} from './app/pages/home/main/sprint/task-details/task-details.component';
 import {PageNotFoundComponent} from "./app/pages/page-not-found/page-not-found.component";
 
-
 const routes: Routes = [
   {
     path: '', component: AppComponent, children: [
       {path: '', component: HomeComponent},
-      {path: 'products/:productId', component: MainComponent},
-      {path: 'products/:productId/road-maps/:roadMapId', component: MileStoneComponent},
-      {path: 'products/:productId/road-maps/:roadMapId/mile-stones/:taskId/sprint', component: TaskComponent},
+      {path: 'products/:projectId', component: MainComponent},
+      {path: 'products/:projectId/road-maps/:roadMapId', component: MileStoneComponent},
+      {path: 'products/:projectId/road-maps/:roadMapId/mile-stones/:mileStoneId/task', component: TaskComponent},
       {
-        path: 'products/:productId/road-maps/:roadMapId/mile-stones/:taskId/sprint/:sprintId',
+        path: 'products/:projectId/road-maps/:roadMapId/mile-stones/:mileStoneId/task/:taskId',
         component: TaskDetailsComponent
       },
     ]

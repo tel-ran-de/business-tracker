@@ -26,7 +26,7 @@
             <h6><b>Resources</b></h6>
             <ul class="list-group list-group-flush" [ngStyle]="{'max-height.px': 200}" style=" overflow-y: auto">
               <li class="list-group-item" *ngFor="let res of resources">
-                {{res.name}}: {{res.time}} h, {{res.cost}}$
+                {{res.name}}: {{res.hours}} h, {{res.cost}}$
               </li>
             </ul>
           </div>
@@ -57,7 +57,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-1">
       <div class="col" *ngFor="let mileStone of mileStones">
         <div class="card">
-          <app-mile-stone-element [kpis]="kpisByMileStoneId(mileStone.id)" [mileStone]="mileStone"></app-mile-stone-element>
+          <app-mile-stone-element [mileStone]="mileStone"></app-mile-stone-element>
         </div>
       </div>
     </div>

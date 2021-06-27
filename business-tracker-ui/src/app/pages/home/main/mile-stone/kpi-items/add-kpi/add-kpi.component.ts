@@ -32,12 +32,10 @@ export class AddKpiComponent implements OnInit, OnDestroy {
 
   onClickSave(): void {
     const kpiToAdd: KpiToAdd = new KpiToAdd();
-    kpiToAdd.name = this.form.controls.name.value;
-    kpiToAdd.mileStoneId = this.mileStoneId;
+    kpiToAdd.kpi = this.form.controls.name.value;
 
-    const addKpiSub = this.kpiService.add(kpiToAdd)
+    const addKpiSub = this.kpiService.addKpi(this.mileStoneId, kpiToAdd)
       .subscribe(() => {
-        // тригирю о добовлении кпи
         this.kpiService.kpiAdded$.next(kpiToAdd);
         this.saved.emit(kpiToAdd);
       });

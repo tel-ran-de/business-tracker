@@ -1,3 +1,5 @@
+import {ResourceToAdd} from "../resource/resource-to-add";
+
 export class TaskToAdd {
   id: number;
   mileStoneId: number;
@@ -7,4 +9,5 @@ export class TaskToAdd {
   name: string;
   active: boolean;
   finished: boolean;
+  resources: ResourceToAdd[];
 }

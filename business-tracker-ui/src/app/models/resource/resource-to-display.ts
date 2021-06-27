@@ -4,5 +4,5 @@ export class ResourceToDisplay {
 
   name: string;
   cost: number;
-  time: number;
+  hours: number;
 }

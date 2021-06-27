@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MemberToAdd} from '../../../../../models/member/member-to-add';
 import {MemberToDisplay} from '../../../../../models/member/member-to-display';
 import {TaskService} from '../../../../../serivce/task.service';
 import {ResourceService} from '../../../../../serivce/resource.service';
 import {MemberService} from '../../../../../serivce/member.service';
-import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
 import {TaskToAdd} from '../../../../../models/task/task-to-add';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ResourceToAdd} from '../../../../../models/resource/resource-to-add';
@@ -35,14 +33,14 @@ export class AddTaskComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private resourceService: ResourceService,
               public memberService: MemberService,
-              private responsibleMembersService: ResponsibleMembersService,
               private router: Router) {
   }
 
 
   ngOnInit(): void {
     this.initForm();
-    this.membersList = this.memberService.getAll();
+    const projectId = +this.route.snapshot.paramMap.get("projectId");
+    this.membersList = this.memberService.getAllMembersByProjectId(projectId);
     this.subscribeResourceTriggers();
   }
 
@@ -50,18 +48,16 @@ export class AddTaskComponent implements OnInit, OnDestroy {
 
     const taskToAdd: TaskToAdd = new TaskToAdd();
     taskToAdd.name = this.form.controls.name.value;
-    taskToAdd.mileStoneId = +this.route.snapshot.paramMap.get('taskId');
+    taskToAdd.mileStoneId = +this.route.snapshot.paramMap.get('mileStoneId');
     taskToAdd.delivery = this.form.controls.delivery.value;
-    taskToAdd.memberId = this.getAddMember().id;
+    // taskToAdd.memberId = this.getAddMember().id;
+    taskToAdd.memberId = this.form.controls.member.value.id;
 
     taskToAdd.active = this.active;
     taskToAdd.finished = this.finished;
+    taskToAdd.resources = this.resources ? this.resources : [];
 
-    const addTaskSub = this.taskService.addTask(
-      {
-        task: taskToAdd,
-        resources: this.resources ? this.resources : []
-      }).subscribe(() => this.navigateToTaskPage(),
+    const addTaskSub = this.taskService.addTask(taskToAdd).subscribe(() => this.navigateToTaskPage(),
       error => console.error(error));
 
     this.subscriptions.push(addTaskSub);
@@ -69,18 +65,6 @@ export class AddTaskComponent implements OnInit, OnDestroy {
 
   navigateToTaskPage(): void {
     this.router.navigate(['../../..'], {relativeTo: this.route});
-  }
-
-  private getAddMember(): MemberToAdd {
-    const member = this.form.controls.member.value;
-    const selectedMember = new MemberToAdd();
-    selectedMember.name = member.name;
-    selectedMember.lastName = member.lastName;
-    selectedMember.img = member.img;
-    selectedMember.position = member.position;
-    selectedMember.role = member.role;
-    selectedMember.roadMapId = member.roadMapId;
-    return selectedMember;
   }
 
   private initForm() {

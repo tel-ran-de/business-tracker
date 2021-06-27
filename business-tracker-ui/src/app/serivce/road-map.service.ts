@@ -1,15 +1,22 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {RoadMapToDisplay} from '../models/road-map/road-map-to-display';
-import {HttpOperation} from './http-operation';
-import {RoadMapToAdd} from '../models/road-map/road-map-to-add';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoadMapService extends HttpOperation<RoadMapToDisplay, RoadMapToAdd> {
+export class RoadMapService {
 
-  constructor(private http: HttpClient) {
-    super('api/roadmap', 'api/roadmap', 'api/roadmap', 'api/roadmap', http);
+  options = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
+
+  constructor(private httpClient: HttpClient) {
+  }
+
+  getAllRoadMapsByProjectId(projectId: number): Observable<RoadMapToDisplay[]> {
+    const url = `api/roadmaps/project/${projectId}`
+    return this.httpClient.get<RoadMapToDisplay[]>(url, this.options);
   }
 }

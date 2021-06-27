@@ -1,37 +1,47 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {HttpOperation} from './http-operation';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {TaskToDisplay} from '../models/task/task-to-display';
 import {TaskToAdd} from '../models/task/task-to-add';
-import {ResourceToAdd} from "../models/resource/resource-to-add";
 import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskService extends HttpOperation<TaskToDisplay, TaskToAdd> {
+export class TaskService {
+
+  options = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
 
   constructor(private http: HttpClient) {
-    super('api/task', 'api/task', 'api/task', 'api/task', http);
   }
 
   getAllTasksByMileStoneId(mileStoneId: number): Observable<TaskToDisplay[]> {
     const url = `api/tasks/milestone/${mileStoneId}`
-    return this.http.get<TaskToDisplay[]>(url, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    return this.http.get<TaskToDisplay[]>(url, this.options);
   }
 
-  getAllTasksByActive(isActive: boolean) {
-    return this.http.get<TaskToDisplay[]>('api/tasks/by', {
-      params: new HttpParams().set("active", String(isActive)),
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+  getAllTasksByActive(projectId: number) {
+    const url = `api/tasks/project/${projectId}/active`
+    return this.http.get<TaskToDisplay[]>(url, this.options);
   }
 
-  addTask(arr: { task: TaskToDisplay, resources: ResourceToAdd[] }): Observable<void> {
-    return this.http.post<void>('api/tasks', arr, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+  addTask(arr: TaskToAdd): Observable<void> {
+    return this.http.post<void>('api/tasks', arr, this.options);
+  }
+
+  updateTask(task: TaskToDisplay): Observable<void> {
+    const url = `api/tasks`
+    return this.http.put<void>(url, task, this.options);
+  }
+
+  removeTaskById(taskId: number): Observable<void> {
+    const url = `api/tasks/${taskId}`
+    return this.http.delete<void>(url, this.options);
+  }
+
+  getTaskById(taskId: string): Observable<TaskToDisplay> {
+    const url = `api/tasks/${taskId}`
+    return this.http.get<TaskToDisplay>(url, this.options);
   }
 }

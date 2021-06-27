@@ -25,7 +25,7 @@ export class AddResourceComponent implements OnInit {
   onSubmit(): void {
     const resToAdd: ResourceToAdd = new ResourceToAdd();
     resToAdd.name = this.form.controls.name.value;
-    resToAdd.time = this.form.controls.time.value;
+    resToAdd.hours = this.form.controls.time.value;
     resToAdd.cost = this.form.controls.money.value;
     this.resourceService.transferAddedResource(resToAdd);
     this.formClosed.emit();

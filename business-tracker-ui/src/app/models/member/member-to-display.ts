@@ -7,5 +7,4 @@ export class MemberToDisplay {
   name: string;
   lastName: string;
   position: string;
-  role: string;
 }

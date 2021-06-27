@@ -3,9 +3,9 @@ import {TaskToDisplay} from '../../../../../models/task/task-to-display';
 import {TaskService} from '../../../../../serivce/task.service';
 import {Subscription} from 'rxjs';
 import {ResourceService} from '../../../../../serivce/resource.service';
-import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DeleteConfirmationModalComponent} from '../../delete-confirmation-modal/delete-confirmation-modal.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-task-element',
@@ -22,26 +22,31 @@ export class TaskElementComponent implements OnInit, OnDestroy {
 
   constructor(private taskService: TaskService,
               private resourceService: ResourceService,
-              private responsibleMembersService: ResponsibleMembersService,
-              private modal: NgbModal) {
+              private modal: NgbModal,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     const getAllTasksByMileStoneIdSubscription = this.taskService.getAllTasksByMileStoneId(this.mileStoneId)
-      .subscribe(value => this.tasks = value, error => console.log(error));
+      .subscribe(value => {
+          this.tasks = value;
+          this.tasks.sort((a, b) => a.id - b.id);
+        },
+        error => console.log(error));
 
     this.subscriptions.push(getAllTasksByMileStoneIdSubscription);
   }
 
-  onClickRemoveSprint(task: TaskToDisplay): void {
+  onClickRemoveTask(task: TaskToDisplay): void {
 
     const removeConfirmModal = this.modal.open(DeleteConfirmationModalComponent);
     removeConfirmModal.result.then(value => {
         if (value === 'ok') {
-          const removeTaskByIdSub = this.taskService.removeById(task.id)
+          const removeTaskByIdSub = this.taskService.removeTaskById(task.id)
             .subscribe(() => {
 
-              const getAllResourceSub = this.resourceService.getAll()
+              const roadMapId = +this.route.snapshot.paramMap.get("roadMapId");
+              const getAllResourceSub = this.resourceService.getAllResourcesByRoadMap(roadMapId)
                 .subscribe(resources => {
                   this.resourceService.reloadAddedResourceList$.next(resources);
 

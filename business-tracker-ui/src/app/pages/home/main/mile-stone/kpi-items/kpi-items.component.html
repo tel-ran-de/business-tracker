@@ -10,9 +10,9 @@
 
 <div *ngIf="kpis" [ngStyle]="{'max-height.px': maxHeightElt}" style="overflow-y: auto">
   <div class="bg-warning rounded p-1 ps-3 pe-3 mt-1" *ngFor="let kpi of kpis"
-       [ngClass]="removeId === kpi.id ? 'bg-danger' : ''">
+       [ngClass]="removeKpi === kpi.kpi ? 'bg-danger' : ''">
     <div class="d-flex justify-content-between">
-      <div>{{kpi.name}}</div>
+      <div>{{kpi.kpi}}</div>
       <a style="cursor: pointer" (click)="onClickRemoveKpi(kpi)">X</a>
     </div>
   </div>

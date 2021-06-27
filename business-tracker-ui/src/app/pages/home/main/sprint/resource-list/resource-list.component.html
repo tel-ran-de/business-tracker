@@ -11,7 +11,7 @@
          *ngFor="let res of resourceService.reloadAddedResourceList$ | async">
       <div class="d-flex justify-content-between">
         <div>
-          {{res.name}} {{res.time > 0 ? res.time : 0 | number}} h, {{res.cost > 0 ? res.cost : 0 | number}} $
+          {{res.name}} {{res.hours > 0 ? res.hours : 0 | number}} h, {{res.cost > 0 ? res.cost : 0 | number}} $
         </div>
         <a style="cursor: pointer" (click)="onClickRemoveRes(res)">X</a>
       </div>

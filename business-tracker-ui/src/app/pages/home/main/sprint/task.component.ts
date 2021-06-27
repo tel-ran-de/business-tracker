@@ -19,8 +19,8 @@ export class TaskComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const taskId = this.route.snapshot.paramMap.get('taskId');
-    const getTaskSub = this.taskService.getById(taskId)
+    const mileStoneId = +this.route.snapshot.paramMap.get('mileStoneId');
+    const getTaskSub = this.taskService.getMileStoneById(mileStoneId)
       .subscribe(value => this.mileStone = value);
 
     this.subscriptions.push(getTaskSub);
@@ -44,5 +44,4 @@ export class TaskComponent implements OnInit, OnDestroy {
       }
     }
   }
-
 }

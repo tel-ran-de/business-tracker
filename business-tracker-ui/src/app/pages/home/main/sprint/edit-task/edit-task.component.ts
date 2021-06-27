@@ -6,7 +6,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {TaskService} from "../../../../../serivce/task.service";
 import {ResourceService} from "../../../../../serivce/resource.service";
 import {MemberService} from "../../../../../serivce/member.service";
-import {ResponsibleMembersService} from "../../../../../serivce/responsible-members.service";
 import {TaskToDisplay} from "../../../../../models/task/task-to-display";
 import {ResourceToDisplay} from "../../../../../models/resource/resource-to-display";
 
@@ -17,7 +16,7 @@ import {ResourceToDisplay} from "../../../../../models/resource/resource-to-disp
 })
 export class EditTaskComponent implements OnInit, OnDestroy {
 
-  private form: FormGroup;
+  form: FormGroup;
   private mileStoneId: string;
   private taskId: string;
   private subscriptions: Subscription[] = [];
@@ -25,13 +24,13 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   selectedMember: MemberToDisplay;
   task: TaskToDisplay;
 
-  deliveries: string[] = ['Document', 'Presentation', "Nothing"];
+  deliveries: string[] = ['Document', 'Presentation', "Other", "Nothing"];
 
   members: Observable<MemberToDisplay[]>;
   private resources: ResourceToDisplay[] = [];
   private resourceIdsToRemove: number[] = [];
   @Output()
-  private sprintFound: EventEmitter<boolean> = new EventEmitter<boolean>();
+  private taskIsFound: EventEmitter<boolean> = new EventEmitter<boolean>();
   private resourcesToAdd: ResourceToDisplay[] = [];
 
   constructor(private fb: FormBuilder,
@@ -39,20 +38,19 @@ export class EditTaskComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private resourceService: ResourceService,
               public memberService: MemberService,
-              private responsibleMembersService: ResponsibleMembersService,
               private router: Router) {
   }
 
-
   ngOnInit(): void {
-    this.mileStoneId = this.route.snapshot.paramMap.get('taskId');
-    this.taskId = this.route.snapshot.paramMap.get("sprintId");
-    this.members = this.memberService.getAll();
+    this.mileStoneId = this.route.snapshot.paramMap.get('mileStoneId');
+    this.taskId = this.route.snapshot.paramMap.get("taskId");
+    const projectId = +this.route.snapshot.paramMap.get("projectId");
+    this.members = this.memberService.getAllMembersByProjectId(projectId);
 
     this.initForm();
     this.setFormValues();
 
-    const resourcesGetAllSub = this.resourceService.getAllByParams(this.taskId, 'taskId')
+    const resourcesGetAllSub = this.resourceService.getAllResourcesByTaskId(+this.taskId)
       .subscribe(value => {
         this.resources.push(...value);
         this.resourceService.reloadAddedResourceList$.next(this.resources);
@@ -84,7 +82,10 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     let removeResourceOk = false;
     //Task
     this.task.name = this.form.controls.name.value;
-    const updateTaskSub = this.taskService.updateById(this.task.id, this.task)
+    this.task.delivery = this.form.controls.delivery.value;
+    this.task.memberId = this.form.controls.member.value.id;
+    console.log(this.task)
+    const updateTaskSub = this.taskService.updateTask(this.task)
       .subscribe(() => {
         taskOk = true;
         if (addResourceOk && removeResourceOk) {
@@ -95,7 +96,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     //resources add
     if (this.resourcesToAdd.length > 0) {
       this.resourcesToAdd.forEach((resourceToAdd, index) => {
-        const addResSubsc = this.resourceService.add(resourceToAdd)
+        const addResSubsc = this.resourceService.addResource(resourceToAdd)
           .subscribe(() => {
               if (index === this.resourcesToAdd.length - 1 && taskOk && removeResourceOk) {
                 addResourceOk = true;
@@ -112,7 +113,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     //resource remove
     if (this.resourceIdsToRemove.length > 0) {
       this.resourceIdsToRemove.forEach((id, index) => {
-        const removeSubsc = this.resourceService.removeById(id)
+        const removeSubsc = this.resourceService.removeResource(id)
           .subscribe(() => {
             if (index === this.resourceIdsToRemove.length - 1 && taskOk && addResourceOk) {
               removeResourceOk = true;
@@ -154,14 +155,14 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
   private setFormValues() {
 
-    const getTaskByIdSubscr = this.taskService.getById(this.taskId)
+    const getTaskByIdSubscr = this.taskService.getTaskById(this.taskId)
       .subscribe(value => {
-          this.sprintFound.emit(true);
+          this.taskIsFound.emit(true);
           this.form.controls.name.patchValue(value.name);
           this.form.controls.delivery.patchValue(value.delivery);
           this.task = value;
 
-          const selectedMemberSubscr = this.responsibleMembersService.getById(String(this.task.memberId))
+          const selectedMemberSubscr = this.memberService.getMemberById(this.task.memberId)
             .subscribe(value => {
               this.selectedMember = value;
               this.form.controls.member.patchValue(value);
@@ -169,7 +170,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
           this.subscriptions.push(selectedMemberSubscr)
 
         },
-        () => this.sprintFound.emit(false));
+        () => this.taskIsFound.emit(false));
 
     this.subscriptions.push(getTaskByIdSubscr)
   }

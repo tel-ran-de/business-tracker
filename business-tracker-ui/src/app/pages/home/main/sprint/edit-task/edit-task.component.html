@@ -29,12 +29,12 @@
               await
             </button>
             <button class="btn w-100" type="button" id="edit-task-status-active"
-                    [class]="!task.finished && task.active ? 'btn-primary': 'btn-outline-secondary'"
+                    [class]="task.active ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="task.active = true; task.finished = false">
               in process
             </button>
             <button class="btn w-100" type="button" id="edit-task-status-done"
-                    [class]="task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
+                    [class]="task.finished ? 'btn-primary': 'btn-outline-secondary'"
                     (click)="task.finished = true; task.active = false">
               done
             </button>
@@ -64,3 +64,8 @@
     </div>
   </form>
 </div>
+
+
+<pre>
+  {{task| json}}
+</pre>

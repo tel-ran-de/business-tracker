@@ -1,4 +1,4 @@
-<div class="py-5" *ngIf="members && kpis && activeTasks && roadMaps && mileStones">
+<div class="py-5" *ngIf="members && kpis && activeTasks && roadMaps">
   <div class="row">
     <ul class="nav">
       <li class="nav-item">
@@ -58,6 +58,6 @@
   </div>
 </div>
 
-<div *ngIf="!(members && kpis && activeTasks && roadMaps && mileStones)">
+<div *ngIf="!(members && kpis && activeTasks && roadMaps)">
   <app-pre-loader></app-pre-loader>
 </div>

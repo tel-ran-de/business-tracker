@@ -7,5 +7,4 @@ export class MemberToAdd {
   name: string;
   lastName: string;
   position: string;
-  role: string;
 }

@@ -4,5 +4,5 @@ export class ResourceToAdd {
 
   name: string;
   cost: number;
-  time: number;
+  hours: number;
 }

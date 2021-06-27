@@ -21,7 +21,7 @@ export class KpiItemsComponent implements OnDestroy {
   mileStoneId: number;
 
   openForm = false;
-  removeId = 0;
+  removeKpi: string = '';
 
   constructor(private kpiService: KpiService, private modal: NgbModal) {
   }
@@ -30,16 +30,23 @@ export class KpiItemsComponent implements OnDestroy {
     const removeConfirmModal = this.modal.open(DeleteConfirmationModalComponent);
     removeConfirmModal.result.then(value => {
         if (value === 'ok') {
-          this.removeId = kpi.id;
-          const removeKpiSub = this.kpiService.removeById(kpi.id)
-            .subscribe(() => {
-              const removedKpiIndex = this.kpis.indexOf(kpi);
-              this.kpis.splice(removedKpiIndex, 1);
-              this.kpiService.kpiDeleted$.next(kpi);
-              this.removeId = 0;
-            }, error => console.error(error));
+          this.removeKpi = kpi.kpi;
+          const removeKpiIndex = this.kpis.indexOf(kpi);
 
-          this.subscriptions.push(removeKpiSub);
+          if (removeKpiIndex === -1) {
+            console.log("Index not found");
+            return;
+          } else {
+            const removeKpiSub = this.kpiService.removeKpiByKpi(this.mileStoneId, removeKpiIndex)
+              .subscribe(() => {
+                this.kpis.splice(removeKpiIndex, 1);
+                this.kpiService.kpiDeleted$.next(kpi);
+                this.removeKpi = '';
+              }, error => console.error(error));
+
+            this.subscriptions.push(removeKpiSub);
+          }
+
         }
       }
     );

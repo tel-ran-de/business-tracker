@@ -6,7 +6,6 @@ import {TaskService} from '../../../serivce/task.service';
 import {MemberService} from '../../../serivce/member.service';
 import {MemberToDisplay} from '../../../models/member/member-to-display';
 import {RoadMapToDisplay} from '../../../models/road-map/road-map-to-display';
-import {MileStoneToDisplay} from '../../../models/mile-stone/mile-stone-to-display';
 import {KpiToDisplay} from '../../../models/kpi/kpi-to-display';
 import {TaskToDisplay} from '../../../models/task/task-to-display';
 import {Subscription} from 'rxjs';
@@ -20,7 +19,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   activeTasks: TaskToDisplay[];
   kpis: KpiToDisplay[];
-  mileStones: MileStoneToDisplay[];
   members: MemberToDisplay[];
   roadMaps: RoadMapToDisplay[];
 
@@ -36,16 +34,14 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const getAllRoadMapsSubscription = this.roadMapService.getAll().subscribe(value => this.roadMaps = value);
+    const getAllRoadMapsSubscription = this.roadMapService.getAllRoadMapsByProjectId(1).subscribe(value => this.roadMaps = value);
     const getAllKpisByProjectSubscription = this.kpiService.getKpisByProjectId(1).subscribe(value => this.kpis = value);
-    const getAllMileStonesSubscription = this.mileStoneService.getAll().subscribe(value => this.mileStones = value);
 
-    const getAllActiveTasksSubscription = this.taskService.getAllByParams('true', 'active').subscribe(value => this.activeTasks = value);
-    const getAllMembersSubscription = this.memberService.getAll().subscribe(value => this.members = value);
+    const getAllActiveTasksSubscription = this.taskService.getAllTasksByActive(1).subscribe(value => this.activeTasks = value);
+    const getAllMembersSubscription = this.memberService.getAllMembersByProjectId(1).subscribe(value => this.members = value);
 
     this.subscriptions.push(getAllKpisByProjectSubscription,
       getAllRoadMapsSubscription,
-      getAllMileStonesSubscription,
       getAllActiveTasksSubscription,
       getAllMembersSubscription);
   }

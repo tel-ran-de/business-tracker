@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ResourceService} from '../../../../../serivce/resource.service';
 import {MemberService} from '../../../../../serivce/member.service';
-import {ResponsibleMembersService} from '../../../../../serivce/responsible-members.service';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {MileStoneToDisplay} from '../../../../../models/mile-stone/mile-stone-to-display';
@@ -21,16 +20,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   constructor(private resourceService: ResourceService,
               private memberService: MemberService,
               private mileStoneService: MileStoneService,
-              private responsibleMembersService: ResponsibleMembersService,
               private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    const mileStoneId = this.route.snapshot.paramMap.get('taskId');
-    const getMileStonekSub = this.mileStoneService.getById(mileStoneId)
+    const mileStoneId = +this.route.snapshot.paramMap.get('mileStoneId');
+    const getMileStonekSub = this.mileStoneService.getMileStoneById(mileStoneId)
       .subscribe(value => this.mileStoneToDisplay = value);
     this.subscriptions.push(getMileStonekSub);
-
   }
 
   getStatus(ms: MileStoneToDisplay): number {

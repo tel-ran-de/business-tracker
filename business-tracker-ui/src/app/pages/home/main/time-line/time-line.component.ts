@@ -26,8 +26,12 @@ export class TimeLineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const getMileStoneByRoadMapIdSubscription = this.mileStoneService
-      .getAllByParams(this.roadMapId, 'roadMapId').subscribe(value => this.mileStones = value);
+    const getMileStoneByRoadMapIdSubscription = this.mileStoneService.getAllMileStonesByRoadMapId(+this.roadMapId)
+      .subscribe(value => {
+          this.mileStones = value;
+          this.mileStones.sort((a, b) => a.id - b.id);
+        }
+        , error => console.log(error));
     this.subscriptions.push(getMileStoneByRoadMapIdSubscription);
   }
 
