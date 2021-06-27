@@ -1,20 +1,12 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.model.Member;
 import de.telran.businesstracker.controller.dto.MemberDto;
 import de.telran.businesstracker.mapper.MemberMapper;
+import de.telran.businesstracker.model.Member;
 import de.telran.businesstracker.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -47,13 +39,12 @@ public class MemberController {
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateMember(@RequestBody @Valid MemberDto memberDto) throws HttpClientErrorException.BadRequest {
-
         memberService.edit(memberDto.id, memberDto.position);
     }
 
-    @GetMapping("")
-    public List<MemberDto> getAllMembers() {
-        return memberService.getAll()
+    @GetMapping("/project/{id}")
+    public List<MemberDto> getAllMembersByProjectId(@PathVariable long id) {
+        return memberService.getAllByProjectId(id)
                 .stream()
                 .map(memberMapper::toDto)
                 .collect(Collectors.toList());
