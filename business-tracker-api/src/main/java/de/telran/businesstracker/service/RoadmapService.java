@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,16 +38,17 @@ public class RoadmapService {
         roadmapRepository.save(roadmap);
     }
 
-    public List<Roadmap> getAll() {
-        return new ArrayList<>(roadmapRepository.findAll());
-    }
-
     public Roadmap getById(Long id) {
         return roadmapRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ROADMAP_DOES_NOT_EXIST));
     }
 
     public void removeById(Long id) {
         roadmapRepository.deleteById(id);
+    }
+
+    public List<Roadmap> getAllByProjectId(long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new EntityNotFoundException(PROJECT_DOES_NOT_EXIST));
+        return roadmapRepository.findAllByProject(project);
     }
 }
 

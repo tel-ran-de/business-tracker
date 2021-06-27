@@ -1,20 +1,12 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.model.Roadmap;
 import de.telran.businesstracker.controller.dto.RoadmapDto;
 import de.telran.businesstracker.mapper.RoadmapMapper;
+import de.telran.businesstracker.model.Roadmap;
 import de.telran.businesstracker.service.RoadmapService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -50,9 +42,9 @@ public class RoadmapController {
         roadmapService.edit(roadmapDto.id, roadmapDto.name, roadmapDto.startDate);
     }
 
-    @GetMapping("")
-    public List<RoadmapDto> getAllRoadmaps() {
-        return roadmapService.getAll()
+    @GetMapping("project/{id}")
+    public List<RoadmapDto> getAllRoadmapsByProjectId(@PathVariable long id) {
+        return roadmapService.getAllByProjectId(id)
                 .stream()
                 .map(roadmapMapper::toDto)
                 .collect(Collectors.toList());
