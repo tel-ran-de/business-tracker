@@ -43,29 +43,25 @@ class TaskServiceTest {
     private Task task;
     private Milestone milestone;
     private Member member;
-    private Roadmap roadmap;
-    private Project project;
-    private User user;
 
     @BeforeEach
     public void beforeEachTest() {
-        user = new User();
-        project = new Project();
-        roadmap = new Roadmap();
-        member = new Member(1L, "Boss", project, user);
-        milestone = new Milestone(3L, "Milestone", LocalDate.now(),
-                LocalDate.now().plusDays(10), roadmap);
-        task = new Task(2L, "Task", false, false, "Document", milestone, member);
+        User user = new User();
+        Project project = new Project();
+        Roadmap roadmap = new Roadmap();
+        member = new Member(1L, "img-url", "Ivan", "Petrov", "Boss", project, user);
+        milestone = new Milestone(3L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
+        task = new Task(2L, "Task", false, false, "Document", milestone, new ArrayList<>(), member);
     }
 
     @Test
     public void testAdd_success() {
-        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(member.getId()))
+                .thenReturn(Optional.of(member));
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
 
         taskService.add(task.getName(), task.isFinished(), task.isActive(), task.getDelivery(), task.getMilestone().getId(), task.getResponsibleMember().getId());
 
-        verify(taskRepository, times(1)).save(any());
         verify(taskRepository, times(1)).save(argThat(savedTask -> savedTask.getName().equals(task.getName()) &&
                 !savedTask.isActive() && savedTask.getMilestone().getId().equals(milestone.getId()) &&
                 savedTask.getResponsibleMember().getId().equals(member.getId()))
@@ -151,34 +147,6 @@ class TaskServiceTest {
     }
 
     @Test
-    void getAll_twoObjects() {
-
-        Task task1 = new Task(5L, "Task", false, false, "Document", milestone, member);
-        Task task2 = new Task(6L, "Task2", false, true, "Document2", milestone, member);
-
-        List<Task> tasks = new ArrayList<>();
-
-        tasks.add(task1);
-        tasks.add(task2);
-
-        when(taskRepository.findAll()).thenReturn(tasks);
-
-        assertEquals(task1.getName(), taskService.getAll().get(0).getName());
-        assertEquals(task1.isFinished(), taskService.getAll().get(0).isFinished());
-        assertEquals(task1.isActive(), taskService.getAll().get(0).isActive());
-        assertEquals(task1.getDelivery(), taskService.getAll().get(0).getDelivery());
-        assertEquals(task1.getMilestone(), taskService.getAll().get(0).getMilestone());
-        assertEquals(task1.getResponsibleMember(), taskService.getAll().get(0).getResponsibleMember());
-
-        assertEquals(task2.getName(), taskService.getAll().get(1).getName());
-        assertEquals(task2.isFinished(), taskService.getAll().get(1).isFinished());
-        assertEquals(task2.isActive(), taskService.getAll().get(1).isActive());
-        assertEquals(task2.getDelivery(), taskService.getAll().get(1).getDelivery());
-        assertEquals(task2.getMilestone(), taskService.getAll().get(1).getMilestone());
-        assertEquals(task2.getResponsibleMember(), taskService.getAll().get(1).getResponsibleMember());
-    }
-
-    @Test
     void testGetById_objectExist() {
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
         Task task1 = taskService.getById(task.getId());
@@ -196,13 +164,11 @@ class TaskServiceTest {
 
     @Test
     void testGetById_objectNotExist() {
-
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> taskService.getById(task.getId() + 1));
 
         verify(taskRepository, times(1)).findById(any());
         assertEquals("Error! This task doesn't exist in our DB", exception.getMessage());
-
     }
 
     @Captor

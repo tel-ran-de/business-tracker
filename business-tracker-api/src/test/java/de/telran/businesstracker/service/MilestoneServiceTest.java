@@ -24,9 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MilestoneServiceTest {
@@ -101,33 +99,6 @@ class MilestoneServiceTest {
                         savedMilestone.getFinishDate().equals(newFinishDay) &&
                         savedMilestone.getRoadmap().getId().equals(roadmap.getId()))
                 );
-    }
-
-    @Test
-    void getAll_twoObjects() {
-        User user = new User(2L);
-        Project project = new Project(4L, "Great project", user);
-        Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
-
-        Milestone milestone1 = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
-        Milestone milestone2 = new Milestone(2L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
-
-        List<Milestone> milestones = new ArrayList<>();
-
-        milestones.add(milestone1);
-        milestones.add(milestone2);
-
-        when(milestoneRepository.findAll()).thenReturn(milestones);
-
-        assertEquals(milestone1.getName(), milestoneService.getAll().get(0).getName());
-        assertEquals(milestone1.getStartDate(), milestoneService.getAll().get(0).getStartDate());
-        assertEquals(milestone1.getFinishDate(), milestoneService.getAll().get(0).getFinishDate());
-        assertEquals(milestone1.getRoadmap(), milestoneService.getAll().get(0).getRoadmap());
-
-        assertEquals(milestone2.getName(), milestoneService.getAll().get(1).getName());
-        assertEquals(milestone2.getStartDate(), milestoneService.getAll().get(1).getStartDate());
-        assertEquals(milestone2.getFinishDate(), milestoneService.getAll().get(1).getFinishDate());
-        assertEquals(milestone2.getRoadmap(), milestoneService.getAll().get(1).getRoadmap());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package de.telran.businesstracker.controller;
+package de.telran.businesstracker.integration;
 
 import de.telran.businesstracker.model.*;
 import de.telran.businesstracker.repositories.*;
@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 @SpringBootTest
-class TaskControllerTest {
+class IntegrationTest {
 
     @Autowired
     UserRepository userRepository;
@@ -37,7 +35,7 @@ class TaskControllerTest {
         // Member member = new Member(1L, "Boss", project, user);
         Member member = Member.builder().build();
         memberRepository.save(member);
-        Milestone milestone = Milestone.builder().build();
+        Milestone milestone = new Milestone();
         // Milestone milestone = new Milestone(2L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(3), roadmap);
         milestoneRepository.save(milestone);
         Task task = taskService.add("Task1", false, false, "Documnet", milestone.getId(), member.getId());
@@ -55,15 +53,8 @@ class TaskControllerTest {
         Task task1 = taskService.add("Task1", false, false, "Document", milestone.getId(), member.getId());
         Assertions.assertEquals("Task2", taskService.getById(task.getId()).getName());
 
-        List<Task> expected = taskService.getAll();
-        Assertions.assertEquals(expected.size(), 2);
-        Assertions.assertEquals(expected.get(0).getName(), "Task2");
-
         taskService.removeById(task1.getId());
         taskService.removeById(task.getId());
-
-        List<Task> expected1 = taskService.getAll();
-        Assertions.assertEquals(expected1.size(), 0);
 
         milestoneRepository.delete(milestone);
         memberRepository.delete(member);

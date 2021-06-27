@@ -241,7 +241,7 @@ public class KpiServiceTest {
 
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
 
-        kpiService.removeKpi(milestone.getId(), "kpi_01_01");
+        kpiService.removeKpi(milestone.getId(), 0);
 
         verify(milestoneRepository, times(1)).findById(milestone.getId());
         verify(milestoneRepository, times(1)).save(argThat(
@@ -263,7 +263,7 @@ public class KpiServiceTest {
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
 
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
-                kpiService.removeKpi(milestone.getId(), "kpi_01_01"));
+                kpiService.removeKpi(milestone.getId(), 1));
 
         verify(milestoneRepository, times(1)).findById(milestone.getId());
         assertEquals("Error! This kpi doesn't exist in our DB", exception.getMessage());

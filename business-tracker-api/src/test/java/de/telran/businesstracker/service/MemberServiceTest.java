@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -108,41 +105,6 @@ class MemberServiceTest {
                 savedMember.getProject().getId().equals(project.getId()) &&
                 savedMember.getUser().getId().equals(user.getId()))
         );
-    }
-
-    @Test
-    void getAll_twoObjects() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member1 = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
-        Member member2 = Member.builder()
-                .id(2L)
-                .position("Senior")
-                .project(project)
-                .user(user)
-                .build();
-
-        List<Member> members = new ArrayList<>();
-
-        members.add(member1);
-        members.add(member2);
-
-        when(memberRepository.findAll()).thenReturn(members);
-
-        assertEquals(member1.getPosition(), memberService.getAll().get(0).getPosition());
-        assertEquals(member1.getProject(), memberService.getAll().get(0).getProject());
-        assertEquals(member1.getUser(), memberService.getAll().get(0).getUser());
-
-        assertEquals(member2.getPosition(), memberService.getAll().get(1).getPosition());
-        assertEquals(member2.getProject(), memberService.getAll().get(1).getProject());
-        assertEquals(member2.getUser(), memberService.getAll().get(1).getUser());
     }
 
     @Test
