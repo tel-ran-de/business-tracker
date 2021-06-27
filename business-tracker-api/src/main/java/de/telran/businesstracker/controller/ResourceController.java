@@ -1,20 +1,12 @@
 package de.telran.businesstracker.controller;
 
-import de.telran.businesstracker.model.Resource;
 import de.telran.businesstracker.controller.dto.ResourceDto;
 import de.telran.businesstracker.mapper.ResourceMapper;
+import de.telran.businesstracker.model.Resource;
 import de.telran.businesstracker.service.ResourceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -50,9 +42,17 @@ public class ResourceController {
         resourceService.edit(resourceDto.id, resourceDto.name, resourceDto.hours, resourceDto.cost);
     }
 
-    @GetMapping("")
-    public List<ResourceDto> getAllResources() {
-        return resourceService.getAll()
+    @GetMapping("roadmap/{id}")
+    public List<ResourceDto> getAllResourcesByRoadMap(@PathVariable long id) {
+        return resourceService.getAllByRoadMapId(id)
+                .stream()
+                .map(resourceMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("task/{id}")
+    public List<ResourceDto> getAllResourcesByTask(@PathVariable long id) {
+        return resourceService.getAllByTaskId(id)
                 .stream()
                 .map(resourceMapper::toDto)
                 .collect(Collectors.toList());
