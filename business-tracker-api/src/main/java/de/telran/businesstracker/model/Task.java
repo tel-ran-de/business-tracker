@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -20,16 +21,17 @@ public class Task {
 
     @Setter
     private String name;
-
     private boolean finished;
     private boolean active;
-
     @Setter
     private String delivery;
 
     @ManyToOne
     @Setter
     private Milestone milestone;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Resource> resources;
 
     @ManyToOne
     @Setter

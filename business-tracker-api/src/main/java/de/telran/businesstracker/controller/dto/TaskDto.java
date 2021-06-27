@@ -14,7 +14,7 @@ public class TaskDto {
     public String name;
 
     public boolean finished;
-    public boolean acitve;
+    public boolean active;
 
     public Long milestoneId;
 

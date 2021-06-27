@@ -13,7 +13,7 @@ public class TaskMapper {
 
                 .name(task.getName())
                 .finished(task.isFinished())
-                .acitve(task.isActive())
+                .active(task.isActive())
                 .delivery(task.getDelivery())
 
                 .milestoneId(task.getMilestone().getId())

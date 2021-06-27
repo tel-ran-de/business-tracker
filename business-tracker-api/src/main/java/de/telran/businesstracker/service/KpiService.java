@@ -33,7 +33,7 @@ public class KpiService {
     }
 
     public void add(long mileStoneId, String kpi) {
-        Milestone milestone = findById(mileStoneId);
+        Milestone milestone = getMileStoneById(mileStoneId);
         milestone.addKpi(kpi);
         milestoneRepository.save(milestone);
     }
@@ -48,7 +48,7 @@ public class KpiService {
     }
 
     public List<String> getAllKpiByMileStone(long mileStoneId) {
-        return findById(mileStoneId)
+        return getMileStoneById(mileStoneId)
                 .getKpis();
     }
 
@@ -61,19 +61,19 @@ public class KpiService {
                 .collect(Collectors.toList());
     }
 
-    public void removeKpi(long mileStoneId, String kpi) {
-        Milestone milestone = findById(mileStoneId);
+    public void removeKpi(long mileStoneId, int kpiIndex) {
+        Milestone milestone = getMileStoneById(mileStoneId);
         List<String> kpis = milestone.getKpis();
 
-        if (kpis.contains(kpi))
-            kpis.remove(kpi);
-        else
+        try {
+            kpis.remove(kpiIndex);
+            milestoneRepository.save(milestone);
+        } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException(KPI_NOT_FOUND);
-
-        milestoneRepository.save(milestone);
+        }
     }
 
-    public Milestone findById(long mileStoneId) {
+    public Milestone getMileStoneById(long mileStoneId) {
         return milestoneRepository.findById(mileStoneId)
                 .orElseThrow(() -> new EntityNotFoundException(MILESTONE_NOT_FOUND));
     }

@@ -9,15 +9,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskToAddDto {
 
-    public Long id;
-
     public String name;
-
-    public Boolean finished;
-
-    public Long milestoneId;
-
-    public Long memberId;
+    public boolean finished;
+    public boolean active;
+    public long mileStoneId;
+    public long memberId;
+    public String delivery;
 
     public List<ResourceDto> resources;
 }
