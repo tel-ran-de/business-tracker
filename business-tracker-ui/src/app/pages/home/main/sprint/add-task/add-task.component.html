@@ -16,12 +16,12 @@
       <div class="col-6">
         <div class="mb-3">
           <label for="add-task-input-deadline" class="form-label">Deadline</label>
-          <input type="date" id="add-task-input-deadline" class="form-control" disabled>
+          <input type="date" id="add-task-input-deadline" class="form-control" [value]="getDate()">
         </div>
       </div>
       <div class="col-6">
         <div class="mb-3">
-          <div class="mb-2">Status</div>
+          <div class="mb-2">Status*</div>
           <div class="btn-group d-flex" id="add-task-status-btn-groups">
             <button class="btn w-100" type="button" id="add-task-status-await"
                     [class]="!finished && !active ? 'btn-primary': 'btn-outline-secondary'"
@@ -40,13 +40,13 @@
     <div class="mb-3">
       <label for="add-task-select-member" class="form-label">Responsible for the result*</label>
       <select id="add-task-select-member" class="form-select" formControlName="member">
-        <option value="" disabled selected>Choose responsibly member</option>
+        <option value="" disabled selected>Choose responsibly member*</option>
         <option *ngFor="let member of membersList | async" [ngValue]="member">
-          {{member.name}} {{member.lastName}} {{member.position}}</option>
+          {{member.name}} {{member.lastName}}</option>
       </select>
     </div>
     <div class="mb-3">
-      <label for="add-task-select-delivery" class="form-label">Deliveries</label>
+      <label for="add-task-select-delivery" class="form-label">Deliveries*</label>
       <select id="add-task-select-delivery" class="form-select" formControlName="delivery">
         <option value="" disabled selected>Choose delivery</option>
         <option *ngFor="let delivery of deliveries" [ngValue]="delivery">{{delivery}}</option>

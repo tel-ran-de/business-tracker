@@ -98,4 +98,8 @@ export class AddTaskComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(transferSubscribe, resRemovedSub);
   }
+
+  getDate(): string {
+    return new Date().toISOString().split("T")[0];
+  }
 }

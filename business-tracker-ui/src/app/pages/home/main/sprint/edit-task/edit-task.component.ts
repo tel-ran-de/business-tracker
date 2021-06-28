@@ -58,7 +58,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
     const transferSubscribe = this.resourceService.addResourceTransfer$
       .subscribe(resourceToAdd => {
-        resourceToAdd.taskId = +this.mileStoneId;
+        resourceToAdd.taskId = +this.taskId;
 
         this.resources.push(resourceToAdd);
         this.resourcesToAdd.push(resourceToAdd);
@@ -84,7 +84,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     this.task.name = this.form.controls.name.value;
     this.task.delivery = this.form.controls.delivery.value;
     this.task.memberId = this.form.controls.member.value.id;
-    console.log(this.task)
     const updateTaskSub = this.taskService.updateTask(this.task)
       .subscribe(() => {
         taskOk = true;
@@ -181,5 +180,9 @@ export class EditTaskComponent implements OnInit, OnDestroy {
         subscription.unsubscribe();
       }
     }
+  }
+
+  getDate(): string {
+    return new Date().toISOString().split("T")[0];
   }
 }

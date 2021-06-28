@@ -16,12 +16,12 @@
       <div class="col-6">
         <div class="mb-3">
           <label for="edit-task-input-deadline" class="form-label">Deadline</label>
-          <input type="date" id="edit-task-input-deadline" class="form-control">
+          <input type="date" id="edit-task-input-deadline" class="form-control" [value]="getDate()">
         </div>
       </div>
       <div class="col-6">
         <div class="mb-3">
-          <div class="mb-2">Status</div>
+          <div class="mb-2">Status*</div>
           <div class="btn-group d-flex" id="edit-task-status-btn-groups">
             <button class="btn w-100" type="button" id="edit-task-status-await"
                     [class]="!task.finished && !task.active ? 'btn-primary': 'btn-outline-secondary'"
