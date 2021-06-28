@@ -3,6 +3,7 @@ package de.telran.businesstracker.service;
 import de.telran.businesstracker.model.*;
 import de.telran.businesstracker.repositories.MemberRepository;
 import de.telran.businesstracker.repositories.MilestoneRepository;
+import de.telran.businesstracker.repositories.ProjectRepository;
 import de.telran.businesstracker.repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,24 +32,25 @@ class TaskServiceTest {
 
     @Mock
     MemberRepository memberRepository;
-
     @Mock
     MilestoneRepository milestoneRepository;
-
+    @Mock
+    ProjectRepository projectRepository;
     @Mock
     TaskRepository taskRepository;
-
     @InjectMocks
     TaskService taskService;
 
+    private Project project;
+    private User user;
     private Task task;
     private Milestone milestone;
     private Member member;
 
     @BeforeEach
     public void beforeEachTest() {
-        User user = new User();
-        Project project = new Project();
+        user = new User(1L);
+        project = new Project(1L, "Some project", user);
         Roadmap roadmap = new Roadmap();
         member = new Member(1L, "img-url", "Ivan", "Petrov", "Boss", project, user);
         milestone = new Milestone(3L, "Milestone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
@@ -160,6 +163,73 @@ class TaskServiceTest {
 
         verify(taskRepository, times(1)).findById(argThat(
                 id -> id.equals(this.task.getId())));
+    }
+
+    @Test
+    void testGetTasksByProjectAndActive_fourElementsFound() {
+        List<Task> tasks = Arrays.asList(
+                task,
+                new Task(3L, "Task_02", false, true, "Document", milestone, new ArrayList<>(), member),
+                new Task(4L, "Task_03", false, true, "Document", milestone, new ArrayList<>(), member),
+                new Task(5L, "Task_04", false, true, "Document", milestone, new ArrayList<>(), member)
+        );
+
+        when(taskRepository.findAllByMilestone_Roadmap_ProjectAndActiveTrue(project)).thenReturn(tasks);
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        List<Task> tasksResult = taskService.getAllActive(project.getId());
+
+        verify(projectRepository, times(1)).findById(project.getId());
+        verify(taskRepository, times(1)).findAllByMilestone_Roadmap_ProjectAndActiveTrue(project);
+
+        assertEquals(tasks.size(), tasksResult.size());
+
+        assertEquals(tasks.get(0).getName(), tasksResult.get(0).getName());
+        assertEquals(tasks.get(0).getId(), tasksResult.get(0).getId());
+
+        assertEquals(tasks.get(1).getName(), tasksResult.get(1).getName());
+        assertEquals(tasks.get(1).getId(), tasksResult.get(1).getId());
+
+        assertEquals(tasks.get(2).getName(), tasksResult.get(2).getName());
+        assertEquals(tasks.get(2).getId(), tasksResult.get(2).getId());
+
+        assertEquals(tasks.get(3).getName(), tasksResult.get(3).getName());
+        assertEquals(tasks.get(3).getId(), tasksResult.get(3).getId());
+    }
+
+    @Test
+    void testGetTasksByMileStone_fourElementsFound() {
+        List<Task> tasks = Arrays.asList(
+                task,
+                new Task(3L, "Task_02", false, true, "Document", milestone, new ArrayList<>(), member),
+                new Task(4L, "Task_03", false, true, "Document", milestone, new ArrayList<>(), member),
+                new Task(5L, "Task_04", false, true, "Document", milestone, new ArrayList<>(), member)
+        );
+
+        when(taskRepository.findAllByMilestone(milestone)).thenReturn(tasks);
+        when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
+
+        List<Task> tasksResult = taskService.getAllByMileStoneId(milestone.getId());
+
+        verify(projectRepository, times(0)).findById(any());
+        verify(taskRepository, times(0)).findAllByMilestone_Roadmap_ProjectAndActiveTrue(any());
+
+        verify(milestoneRepository, times(1)).findById(milestone.getId());
+        verify(taskRepository, times(1)).findAllByMilestone(milestone);
+
+        assertEquals(tasks.size(), tasksResult.size());
+
+        assertEquals(tasks.get(0).getName(), tasksResult.get(0).getName());
+        assertEquals(tasks.get(0).getId(), tasksResult.get(0).getId());
+
+        assertEquals(tasks.get(1).getName(), tasksResult.get(1).getName());
+        assertEquals(tasks.get(1).getId(), tasksResult.get(1).getId());
+
+        assertEquals(tasks.get(2).getName(), tasksResult.get(2).getName());
+        assertEquals(tasks.get(2).getId(), tasksResult.get(2).getId());
+
+        assertEquals(tasks.get(3).getName(), tasksResult.get(3).getName());
+        assertEquals(tasks.get(3).getId(), tasksResult.get(3).getId());
     }
 
     @Test

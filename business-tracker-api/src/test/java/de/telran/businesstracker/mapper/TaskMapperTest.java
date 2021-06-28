@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-
 public class TaskMapperTest {
 
     @InjectMocks
-    TaskMapper taskMapper;
+    private TaskMapper taskMapper;
 
     private Task task;
 
@@ -43,5 +42,6 @@ public class TaskMapperTest {
         assertEquals(task.getResponsibleMember().getId(), taskDto.memberId);
         assertEquals(task.getMilestone().getId(), taskDto.milestoneId);
         assertEquals(task.getName(), taskDto.name);
+        assertEquals(7, TaskDto.class.getFields().length);
     }
 }
