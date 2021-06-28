@@ -97,7 +97,7 @@ task buildUi {
 task copyUiBuild(type: Copy) {
     dependsOn(':business-tracker-ui:npm_run_build')
     dependsOn('clearUiBuild')
-    from("${project(":business-tracker-ui").projectDir}/dist/business-tracker-ui")
+    from("${project(":business-tracker-ui").projectDir}/dist/unnamed")
     into(project.ext.uiBuildDirectory)
 }
 
