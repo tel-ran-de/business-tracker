@@ -6,6 +6,7 @@ import de.telran.businesstracker.model.User;
 import de.telran.businesstracker.repositories.MemberRepository;
 import de.telran.businesstracker.repositories.ProjectRepository;
 import de.telran.businesstracker.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -15,17 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -42,42 +40,34 @@ class MemberServiceTest {
     @InjectMocks
     MemberService memberService;
 
+    private Project project;
+    private User user;
+    private Member member;
+
+    @BeforeEach
+    public void beforeEachTest() {
+        user = new User(1L);
+        project = new Project(1L, "Some project", user);
+        member = new Member(1L, "img-url", "Ivan", "Petrov", "Boss", project, user);
+    }
+
     @Test
     public void testAdd_success() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
         when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
 
         memberService.add(member.getPosition(), member.getProject().getId(), member.getUser().getId());
 
         verify(memberRepository, times(1)).save(any());
-        verify(memberRepository, times(1)).save(argThat(savedMember -> savedMember.getPosition().equals(member.getPosition()) &&
-                savedMember.getProject().getId().equals(project.getId()) &&
-                savedMember.getUser().getId().equals(user.getId()))
+        verify(memberRepository, times(1)).save(argThat(savedMember ->
+                savedMember.getPosition().equals(member.getPosition()) &&
+                        savedMember.getProject().getId().equals(project.getId()) &&
+                        savedMember.getUser().getId().equals(user.getId()))
         );
     }
 
     @Test
     public void testAdd_projectDoesNotExist_EntityNotFoundException() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
                 memberService.add(member.getPosition(), member.getProject().getId() + 100, member.getUser().getId()));
 
@@ -87,17 +77,6 @@ class MemberServiceTest {
 
     @Test
     public void memberEdit_memberExist_fieldsChanged() {
-
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
         String newPosition = "Senior";
 
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
@@ -111,52 +90,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void getAll_twoObjects() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member1 = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
-        Member member2 = Member.builder()
-                .id(2L)
-                .position("Senior")
-                .project(project)
-                .user(user)
-                .build();
-
-        List<Member> members = new ArrayList<>();
-
-        members.add(member1);
-        members.add(member2);
-
-        when(memberRepository.findAll()).thenReturn(members);
-
-        assertEquals(member1.getPosition(), memberService.getAll().get(0).getPosition());
-        assertEquals(member1.getProject(), memberService.getAll().get(0).getProject());
-        assertEquals(member1.getUser(), memberService.getAll().get(0).getUser());
-
-        assertEquals(member2.getPosition(), memberService.getAll().get(1).getPosition());
-        assertEquals(member2.getProject(), memberService.getAll().get(1).getProject());
-        assertEquals(member2.getUser(), memberService.getAll().get(1).getUser());
-    }
-
-    @Test
     void testGetById_objectExist() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         Member expectedMember = memberService.getById(member.getId());
 
@@ -170,16 +104,6 @@ class MemberServiceTest {
 
     @Test
     void testGetById_objectNotExist() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> memberService.getById(member.getId() + 1));
 
@@ -188,21 +112,40 @@ class MemberServiceTest {
 
     }
 
+    @Test
+    void testGetMembersByProjectId_fourUsersFound() {
+        List<Member> members = Arrays.asList(
+                member,
+                new Member(2L, "img", "Vasja", "Pupkin", "CTO", project, user),
+                new Member(3L, "img", "Max", "Schulz", "Dev", project, user)
+        );
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+        when(memberRepository.findAllByProject(project)).thenReturn(members);
+
+        List<Member> membersResult = memberService.getAllByProjectId(project.getId());
+
+        verify(projectRepository, times(1)).findById(project.getId());
+        verify(memberRepository, times(1)).findAllByProject(project);
+
+        assertEquals(members.size(), membersResult.size());
+        assertTrue(membersResult.contains(member));
+
+        assertEquals(2L, membersResult.get(1).getId());
+        assertEquals("Vasja", membersResult.get(1).getName());
+        assertEquals("Pupkin", membersResult.get(1).getLastName());
+        assertEquals("CTO", membersResult.get(1).getPosition());
+
+        assertEquals(3L, membersResult.get(2).getId());
+        assertEquals("Max", membersResult.get(2).getName());
+        assertEquals("Schulz", membersResult.get(2).getLastName());
+        assertEquals("Dev", membersResult.get(2).getPosition());
+    }
+
     @Captor
     ArgumentCaptor<Member> taskArgumentCaptor;
 
     @Test
     void removeById_oneObjectDeleted() {
-        User user = new User(2L);
-        Project project = new Project(3L, "Project", user);
-
-        Member member = Member.builder()
-                .id(1L)
-                .position("Dev")
-                .project(project)
-                .user(user)
-                .build();
-
         when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 

@@ -1,0 +1,25 @@
+<div class="py-5" *ngIf="mileStone">
+
+  <div class="row">
+    <div>
+      <h1>Butler</h1>
+    </div>
+    <h5 class="h5 w-50 text-wrap">
+      Про-активный ассистент, знающий, что делает твоя команда и понимающий контекст твоего проекта.
+      Конспертирует совещания, отслеживает даты и организует проектную деятельность</h5>
+  </div>
+  <hr>
+  <div class="row">
+    <h4>Add new task to the: <strong>{{mileStone.name}}</strong></h4>
+    <div class="col-8">
+      <app-add-task></app-add-task>
+    </div>
+    <div class="col-4">
+      <app-resource-list></app-resource-list>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!mileStone">
+  <app-pre-loader></app-pre-loader>
+</div>

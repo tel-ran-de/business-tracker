@@ -24,9 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MilestoneServiceTest {
@@ -48,14 +46,7 @@ class MilestoneServiceTest {
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
-
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         milestoneService.add(milestone.getName(), milestone.getStartDate()
                 , milestone.getFinishDate(), milestone.getRoadmap().getId());
@@ -75,13 +66,7 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
                 milestoneService.add(milestone.getName(), milestone.getStartDate()
@@ -98,13 +83,7 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         String newName = "New milestone";
         LocalDate newStartDay = LocalDate.now().plusDays(1);
@@ -123,58 +102,12 @@ class MilestoneServiceTest {
     }
 
     @Test
-    void getAll_twoObjects() {
-        User user = new User(2L);
-        Project project = new Project(4L, "Great project", user);
-        Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
-
-        Milestone milestone1 = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
-
-        Milestone milestone2 = Milestone.builder()
-                .id(2L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
-
-        List<Milestone> milestones = new ArrayList<>();
-
-        milestones.add(milestone1);
-        milestones.add(milestone2);
-
-        when(milestoneRepository.findAll()).thenReturn(milestones);
-
-        assertEquals(milestone1.getName(), milestoneService.getAll().get(0).getName());
-        assertEquals(milestone1.getStartDate(), milestoneService.getAll().get(0).getStartDate());
-        assertEquals(milestone1.getFinishDate(), milestoneService.getAll().get(0).getFinishDate());
-        assertEquals(milestone1.getRoadmap(), milestoneService.getAll().get(0).getRoadmap());
-
-        assertEquals(milestone2.getName(), milestoneService.getAll().get(1).getName());
-        assertEquals(milestone2.getStartDate(), milestoneService.getAll().get(1).getStartDate());
-        assertEquals(milestone2.getFinishDate(), milestoneService.getAll().get(1).getFinishDate());
-        assertEquals(milestone2.getRoadmap(), milestoneService.getAll().get(1).getRoadmap());
-    }
-
-    @Test
     void testGetById_objectExist() {
         User user = new User(2L);
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         when(milestoneRepository.findById(milestone.getId())).thenReturn(Optional.of(milestone));
         Milestone expectedMilestone = milestoneService.getById(milestone.getId());
@@ -194,20 +127,13 @@ class MilestoneServiceTest {
         Project project = new Project(4L, "Great project", user);
         Roadmap roadmap = new Roadmap(3L, "Roadmap", LocalDate.now(), project);
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> milestoneService.getById(milestone.getId() + 1));
 
         verify(milestoneRepository, times(1)).findById(any());
         assertEquals("Error! This milestone doesn't exist in our DB", exception.getMessage());
-
     }
 
     @Captor
@@ -221,13 +147,7 @@ class MilestoneServiceTest {
 
         when(roadmapRepository.findById(roadmap.getId())).thenReturn(Optional.of(roadmap));
 
-        Milestone milestone = Milestone.builder()
-                .id(1L)
-                .name("Milestone")
-                .startDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusDays(10))
-                .roadmap(roadmap)
-                .build();
+        Milestone milestone = new Milestone(1L, "MileStone", LocalDate.now(), LocalDate.now().plusDays(10), roadmap, new ArrayList<>());
 
         milestoneService.add(milestone.getName(), milestone.getStartDate()
                 , milestone.getFinishDate(), milestone.getRoadmap().getId());

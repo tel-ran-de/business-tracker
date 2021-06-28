@@ -9,7 +9,6 @@ import de.telran.businesstracker.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,8 +42,9 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public List<Member> getAll() {
-        return new ArrayList<>(memberRepository.findAll());
+    public List<Member> getAllByProjectId(long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new EntityNotFoundException(PROJECT_DOES_NOT_EXIST));
+        return memberRepository.findAllByProject(project);
     }
 
     public Member getById(Long id) {

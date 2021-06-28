@@ -1,0 +1,63 @@
+<div class="py-5" *ngIf="members && kpis && activeTasks && roadMaps">
+  <div class="row">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="../../">go back</a>
+      </li>
+    </ul>
+    <h1>Butler</h1>
+    <h5 class="h5 w-50 text-wrap">
+      Про-активный ассистент, знающий, что делает твоя команда и понимающий контекст твоего проекта.
+      Конспертирует совещания, отслеживает даты и организует проектную деятельность</h5>
+  </div>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-8">
+        <div class="row row-cols-1 row-cols-md-6 g-1" style="max-width: 844px; flex-wrap: nowrap; overflow-x:auto ">
+          <div class="col card-hover" *ngFor="let card of members">
+            <div class="d-flex justify-content-center">
+              <img src="{{card.img}}" height="100" width="100" style="border-radius: 100px"
+                   alt="{{card.name}} {{card.lastName}}">
+            </div>
+            <h6 class="text-wrap text-center">{{card.name}} {{card.lastName}}</h6>
+            <p class="text-center">{{card.position}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <h6><b>KPI</b></h6>
+        <ul class="list-group list-group-flush" [ngStyle]="{'max-height.px': 170}"
+            style="overflow-y: auto">
+          <li class="list-group-item list-group-item-action" *ngFor="let kpi of kpis">{{kpi.kpi}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row mt-5">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body" *ngFor="let rm of roadMaps">
+          <h4>{{rm.name}}</h4>
+          <app-time-line [roadMapId]="numberToString(rm.id)" class="flex-fill"></app-time-line>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <h6><b>Current tasks <small>(active)</small></b></h6>
+      <ul class="list-group list-group-flush" [ngStyle]="{'max-height.px': 500}" style="overflow-y: auto">
+        <li class="list-group-item list-group-item-action p-2 fw-bold"
+            *ngFor="let activeTask of activeTasks"
+            [class.list-group-item-success]="activeTask.active">
+          {{activeTask.name}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(members && kpis && activeTasks && roadMaps)">
+  <app-pre-loader></app-pre-loader>
+</div>

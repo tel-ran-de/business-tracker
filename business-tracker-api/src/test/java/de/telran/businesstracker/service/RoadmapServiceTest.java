@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RoadmapServiceTest {
@@ -107,41 +104,6 @@ class RoadmapServiceTest {
                         savedRoadmap.getStartDate().equals(newStartDay) &&
                         savedRoadmap.getProject().getId().equals(project.getId()))
                 );
-    }
-
-    @Test
-    void getAll_twoObjects() {
-        User user = new User(2L);
-        Project project = new Project(4L, "Great project", user);
-
-        Roadmap roadmap1 = Roadmap.builder()
-                .id(1L)
-                .name("Roadmap")
-                .startDate(LocalDate.now())
-                .project(project)
-                .build();
-
-        Roadmap roadmap2 = Roadmap.builder()
-                .id(7L)
-                .name("Roadmap")
-                .startDate(LocalDate.now())
-                .project(project)
-                .build();
-
-        List<Roadmap> roadmaps = new ArrayList<>();
-
-        roadmaps.add(roadmap1);
-        roadmaps.add(roadmap2);
-
-        when(roadmapRepository.findAll()).thenReturn(roadmaps);
-
-        assertEquals(roadmap1.getName(), roadmapService.getAll().get(0).getName());
-        assertEquals(roadmap1.getStartDate(), roadmapService.getAll().get(0).getStartDate());
-        assertEquals(roadmap1.getProject(), roadmapService.getAll().get(0).getProject());
-
-        assertEquals(roadmap2.getName(), roadmapService.getAll().get(1).getName());
-        assertEquals(roadmap2.getStartDate(), roadmapService.getAll().get(1).getStartDate());
-        assertEquals(roadmap2.getProject(), roadmapService.getAll().get(1).getProject());
     }
 
     @Test

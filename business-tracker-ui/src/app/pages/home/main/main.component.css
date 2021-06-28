@@ -1,0 +1,9 @@
+.card-hover:hover {
+  border: none;
+  background: #ff7a59;
+  color: #fff;
+  border-radius: 25px;
+  position: relative;
+  box-sizing: border-box;
+  transition: all 500ms ease;
+}
