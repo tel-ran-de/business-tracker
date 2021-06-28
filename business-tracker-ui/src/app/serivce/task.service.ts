@@ -21,7 +21,7 @@ export class TaskService {
     return this.http.get<TaskToDisplay[]>(url, this.options);
   }
 
-  getAllTasksByActive(projectId: number) {
+  getAllTasksByProjectAndActive(projectId: number) {
     const url = `api/tasks/project/${projectId}/active`
     return this.http.get<TaskToDisplay[]>(url, this.options);
   }

@@ -9,6 +9,7 @@ import {RoadMapToDisplay} from '../../../models/road-map/road-map-to-display';
 import {KpiToDisplay} from '../../../models/kpi/kpi-to-display';
 import {TaskToDisplay} from '../../../models/task/task-to-display';
 import {Subscription} from 'rxjs';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-main',
@@ -30,15 +31,18 @@ export class MainComponent implements OnInit, OnDestroy {
               private roadMapService: RoadMapService,
               private kpiService: KpiService,
               private mileStoneService: MileStoneService,
-              private memberService: MemberService) {
+              private memberService: MemberService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    const getAllRoadMapsSubscription = this.roadMapService.getAllRoadMapsByProjectId(1).subscribe(value => this.roadMaps = value);
-    const getAllKpisByProjectSubscription = this.kpiService.getKpisByProjectId(1).subscribe(value => this.kpis = value);
+    const projectId = +this.route.snapshot.paramMap.get("projectId");
 
-    const getAllActiveTasksSubscription = this.taskService.getAllTasksByActive(1).subscribe(value => this.activeTasks = value);
-    const getAllMembersSubscription = this.memberService.getAllMembersByProjectId(1).subscribe(value => this.members = value);
+    const getAllRoadMapsSubscription = this.roadMapService.getAllRoadMapsByProjectId(projectId).subscribe(value => this.roadMaps = value);
+    const getAllKpisByProjectSubscription = this.kpiService.getKpisByProjectId(projectId).subscribe(value => this.kpis = value);
+
+    const getAllActiveTasksSubscription = this.taskService.getAllTasksByProjectAndActive(projectId).subscribe(value => this.activeTasks = value);
+    const getAllMembersSubscription = this.memberService.getAllMembersByProjectId(projectId).subscribe(value => this.members = value);
 
     this.subscriptions.push(getAllKpisByProjectSubscription,
       getAllRoadMapsSubscription,

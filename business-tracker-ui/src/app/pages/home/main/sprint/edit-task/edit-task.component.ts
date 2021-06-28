@@ -64,15 +64,31 @@ export class EditTaskComponent implements OnInit, OnDestroy {
         this.resourcesToAdd.push(resourceToAdd);
       });
 
+    /**
+     * Слушатель. При удаление элемента из отображаемого списка (resources) на странице.
+     *  - элемент будет добавлен в список для удаления (только id и только если id у элемента не undefined). - resourceIdsToRemove
+     *  - если у элемента id = undefined то этот элемент не содержится в бд. Т.е. этот элемент хотели добавить в дб,
+     *    но решили не добавлять, удалив его из списка. Значит этот элемент был записан в список для добавления элементов - resourcesToAdd.
+     *    В этом слуае элемент будет удален из resourcesToAdd, и не будет добавлен в resourceIdsToRemove.
+     *    Соответсвенно не будет отправлен запрос на удаление этого элемента на сервер.
+     */
+
     const resRemovedSub = this.resourceService.reloadResourceListRemoved$
       .subscribe(resourceToRemove => {
         if (resourceToRemove.id !== undefined) {
+          //Добавляет в список для удалениения, только те ресурсы, которые присутсвуют в дб (т.е. имеют id)
           this.resourceIdsToRemove.push(resourceToRemove.id);
+          //Если у ресурса нет id, значит его еще не добавили в бд.
+          //Значит что пользовтель хотел добавит ресурс в дб, но решил этого не делать и удалил из списка.
+          //Т.к. ресурс был ранее сохранен в список для добавления (но все еще не добавлен в бд) его следует удалить из списка добавления
         } else {
           const index = this.resourcesToAdd.indexOf(resourceToRemove);
+          //Дополнительная проверка, что элемент присутсвует в списке добавления
           if (index !== -1)
             this.resourcesToAdd.splice(index, 1);
         }
+
+        //Удаление элемента из отображаемого списка элементов
         const removedResIndex = this.resources.indexOf(resourceToRemove);
         this.resources.splice(removedResIndex, 1);
       });
@@ -82,14 +98,14 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
 
-    let taskOk = false;
+    let taskEditOk = false;
     //Task
     this.task.name = this.form.controls.name.value;
     this.task.delivery = this.form.controls.delivery.value;
     this.task.memberId = this.form.controls.member.value.id;
     const updateTaskSub = this.taskService.updateTask(this.task)
       .subscribe(() => {
-        taskOk = true;
+        taskEditOk = true;
         if (this.resourcesToAdd.length === 0 && this.resourceIdsToRemove.length === 0) {
           this.navigateToTaskPage();
         }
@@ -100,9 +116,11 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.resourcesToAdd.forEach((resourceToAdd, index) => {
         const addResSubsc = this.resourceService.addResource(resourceToAdd)
           .subscribe(() => {
+              //Когда последний элемент из списка был вызван и успешно добавлен, то очистить список элементов
               if (index === this.resourcesToAdd.length - 1)
                 this.resourcesToAdd = [];
-              if (this.resourcesToAdd.length === 0 && taskOk && this.resourceIdsToRemove.length === 0) {
+              //Если все условия выполнены успешно, то перенаправить пользователя на страницу назад
+              if (this.resourcesToAdd.length === 0 && taskEditOk && this.resourceIdsToRemove.length === 0) {
                 this.navigateToTaskPage();
               }
             },
@@ -117,7 +135,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
         const removeSubsc = this.resourceService.removeResource(id).subscribe(() => {
           if (index === this.resourceIdsToRemove.length - 1)
             this.resourceIdsToRemove = [];
-          if (this.resourceIdsToRemove.length === 0 && taskOk && this.resourcesToAdd.length === 0) {
+          if (this.resourceIdsToRemove.length === 0 && taskEditOk && this.resourcesToAdd.length === 0) {
             this.navigateToTaskPage();
           }
 
@@ -183,6 +201,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   }
 
   getDate(): string {
+    //пока просто заглушка для поля формы deadline
     return new Date().toISOString().split("T")[0];
   }
 }
