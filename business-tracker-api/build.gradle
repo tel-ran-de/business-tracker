@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'de.telran'
-version = '0.0.1-SNAPSHOT'
+//version = '0.0.1'
 sourceCompatibility = '11'
 
 configurations {
@@ -75,12 +75,12 @@ task bootJarDev {
     group('build')
 }
 
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.hasTask(bootJarDev)) {
-        def build = ext.incrementAndGetBuildVersion()
-        version = "${version}.${build}-DEV"
-    }
-}
+//gradle.taskGraph.whenReady { taskGraph ->
+//    if (taskGraph.hasTask(bootJarDev)) {
+//        def build = ext.incrementAndGetBuildVersion()
+//        version = "${version}.${build}-DEV"
+//    }
+//}
 
 
 // ui tasks
