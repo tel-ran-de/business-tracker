@@ -66,8 +66,13 @@ export class EditTaskComponent implements OnInit, OnDestroy {
 
     const resRemovedSub = this.resourceService.reloadResourceListRemoved$
       .subscribe(resourceToRemove => {
-        this.resourceIdsToRemove.push(resourceToRemove.id);
-
+        if (resourceToRemove.id !== undefined) {
+          this.resourceIdsToRemove.push(resourceToRemove.id);
+        } else {
+          const index = this.resourcesToAdd.indexOf(resourceToRemove);
+          if (index !== -1)
+            this.resourcesToAdd.splice(index, 1);
+        }
         const removedResIndex = this.resources.indexOf(resourceToRemove);
         this.resources.splice(removedResIndex, 1);
       });
@@ -78,8 +83,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   onSubmit(): void {
 
     let taskOk = false;
-    let addResourceOk = false;
-    let removeResourceOk = false;
     //Task
     this.task.name = this.form.controls.name.value;
     this.task.delivery = this.form.controls.delivery.value;
@@ -87,7 +90,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     const updateTaskSub = this.taskService.updateTask(this.task)
       .subscribe(() => {
         taskOk = true;
-        if (addResourceOk && removeResourceOk) {
+        if (this.resourcesToAdd.length === 0 && this.resourceIdsToRemove.length === 0) {
           this.navigateToTaskPage();
         }
       }, error => console.error(error));
@@ -97,8 +100,9 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.resourcesToAdd.forEach((resourceToAdd, index) => {
         const addResSubsc = this.resourceService.addResource(resourceToAdd)
           .subscribe(() => {
-              if (index === this.resourcesToAdd.length - 1 && taskOk && removeResourceOk) {
-                addResourceOk = true;
+              if (index === this.resourcesToAdd.length - 1)
+                this.resourcesToAdd = [];
+              if (this.resourcesToAdd.length === 0 && taskOk && this.resourceIdsToRemove.length === 0) {
                 this.navigateToTaskPage();
               }
             },
@@ -106,25 +110,21 @@ export class EditTaskComponent implements OnInit, OnDestroy {
           );
         this.subscriptions.push(addResSubsc);
       })
-    } else {
-      addResourceOk = true;
     }
     //resource remove
     if (this.resourceIdsToRemove.length > 0) {
       this.resourceIdsToRemove.forEach((id, index) => {
-        const removeSubsc = this.resourceService.removeResource(id)
-          .subscribe(() => {
-            if (index === this.resourceIdsToRemove.length - 1 && taskOk && addResourceOk) {
-              removeResourceOk = true;
-              this.navigateToTaskPage();
-            }
+        const removeSubsc = this.resourceService.removeResource(id).subscribe(() => {
+          if (index === this.resourceIdsToRemove.length - 1)
+            this.resourceIdsToRemove = [];
+          if (this.resourceIdsToRemove.length === 0 && taskOk && this.resourcesToAdd.length === 0) {
+            this.navigateToTaskPage();
+          }
 
-          }, error => console.error(error));
+        }, error => console.error(error));
         this.subscriptions.push(removeSubsc);
 
       });
-    } else {
-      removeResourceOk = true;
     }
 
     this.subscriptions.push(updateTaskSub);
