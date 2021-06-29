@@ -1,4 +1,4 @@
 FROM openjdk:11
-ADD busines-tracker-api/build/libs/busines-tracker-api.jar busines-tracker-api.jar
+ADD business-tracker-api/build/libs/business-tracker-api.jar business-tracker-api.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "busines-tracker-api.jar"]
+ENTRYPOINT ["java", "-jar", "business-tracker-api.jar"]
